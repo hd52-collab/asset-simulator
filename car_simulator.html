@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>中古車コスト比較シミュレーター</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+    background: #f2f4f7;
+    color: #1a1a2e;
+    padding: 16px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .back { font-size: 13px; color: #1a6fb5; text-decoration: none; display: inline-block; margin-bottom: 12px; }
+
+  .section {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .section-title {
+    font-size: 13px; font-weight: 600; color: #666;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+  }
+
+  /* 2-column car settings */
+  .car-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .car-col {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .car-col-a { border-top: 3px solid #2563eb; }
+  .car-col-b { border-top: 3px solid #dc2626; }
+  .car-title {
+    font-size: 15px; font-weight: 700; margin-bottom: 12px;
+  }
+  .car-title-a { color: #2563eb; }
+  .car-title-b { color: #dc2626; }
+
+  .sl-label { font-size: 12px; color: #555; margin-bottom: 3px; margin-top: 10px; }
+  .sl-label:first-child { margin-top: 0; }
+  .sl-row { display: flex; align-items: center; gap: 8px; }
+  input[type=range] {
+    flex: 1; -webkit-appearance: none; height: 4px;
+    border-radius: 2px; background: #dde3ea; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .sl-a input[type=range]::-webkit-slider-thumb { background: #2563eb; }
+  .sl-b input[type=range]::-webkit-slider-thumb { background: #dc2626; }
+  .sl-common input[type=range]::-webkit-slider-thumb { background: #1a6fb5; }
+  .sl-val {
+    font-size: 13px; font-weight: 700; min-width: 52px; text-align: right;
+  }
+  .sl-val-a { color: #2563eb; }
+  .sl-val-b { color: #dc2626; }
+  .sl-val-common { color: #1a6fb5; }
+
+  /* result cards */
+  .result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .card {
+    background: #fff; border-radius: 14px; padding: 14px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center;
+  }
+  .card-a { border-top: 3px solid #2563eb; }
+  .card-b { border-top: 3px solid #dc2626; }
+  .card-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .card-main { font-size: 21px; font-weight: 700; }
+  .card-main-a { color: #2563eb; }
+  .card-main-b { color: #dc2626; }
+  .card-sub { font-size: 12px; color: #666; margin-top: 3px; }
+
+  .diff-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .diff-card {
+    background: #fff; border-radius: 14px; padding: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center;
+  }
+  .diff-label { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .diff-val { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+
+  /* winner banner */
+  .banner {
+    border-radius: 14px; padding: 16px;
+    text-align: center; margin-bottom: 14px;
+    font-size: 16px; font-weight: 700;
+  }
+  .banner-a { background: #dbeafe; color: #1d4ed8; }
+  .banner-b { background: #fee2e2; color: #b91c1c; }
+  .banner-tie { background: #f0fdf4; color: #166534; }
+  .banner-diff { font-size: 13px; font-weight: 400; margin-top: 4px; }
+
+  .chart-wrap {
+    background: #fff; border-radius: 14px; padding: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back">← トップへ</a>
+<h1>中古車コスト比較</h1>
+<p class="subtitle">総所有コストで2台を比較します</p>
+
+<!-- 共通設定 -->
+<div class="section sl-common">
+  <div class="section-title">共通設定</div>
+
+  <div class="sl-label">所有年数</div>
+  <div class="sl-row">
+    <input type="range" id="years" min="1" max="10" step="1" value="5" oninput="sync('years','yearsVal','年')">
+    <div class="sl-val sl-val-common" id="yearsVal">5年</div>
+  </div>
+
+  <div class="sl-label">年間走行距離</div>
+  <div class="sl-row">
+    <input type="range" id="km" min="3000" max="30000" step="1000" value="10000" oninput="sync('km','kmVal','km', v => v.toLocaleString())">
+    <div class="sl-val sl-val-common" id="kmVal">10,000km</div>
+  </div>
+
+  <div class="sl-label">ガソリン単価</div>
+  <div class="sl-row">
+    <input type="range" id="gasPrice" min="130" max="220" step="5" value="165" oninput="sync('gasPrice','gasPriceVal','円/L')">
+    <div class="sl-val sl-val-common" id="gasPriceVal">165円/L</div>
+  </div>
+</div>
+
+<!-- 車A・B 2カラム -->
+<div class="car-grid">
+  <!-- 車A -->
+  <div class="car-col car-col-a sl-a">
+    <div class="car-title car-title-a">車 A</div>
+
+    <div class="sl-label">車体価格（万円）</div>
+    <div class="sl-row">
+      <input type="range" id="priceA" min="10" max="300" step="5" value="80" oninput="syncA('priceA','priceAVal','万円')">
+      <div class="sl-val sl-val-a" id="priceAVal">80万円</div>
+    </div>
+
+    <div class="sl-label">年式</div>
+    <div class="sl-row">
+      <input type="range" id="yearA" min="2010" max="2024" step="1" value="2019" oninput="syncA('yearA','yearAVal','年式')">
+      <div class="sl-val sl-val-a" id="yearAVal">2019年式</div>
+    </div>
+
+    <div class="sl-label">燃費（km/L）</div>
+    <div class="sl-row">
+      <input type="range" id="fuelA" min="5" max="30" step="1" value="15" oninput="syncA('fuelA','fuelAVal','km/L')">
+      <div class="sl-val sl-val-a" id="fuelAVal">15km/L</div>
+    </div>
+
+    <div class="sl-label">年間維持費（万円）</div>
+    <div class="sl-row">
+      <input type="range" id="maintA" min="0" max="30" step="1" value="8" oninput="syncA('maintA','maintAVal','万円/年')">
+      <div class="sl-val sl-val-a" id="maintAVal">8万円/年</div>
+    </div>
+
+    <div class="sl-label">車検費用（万円）</div>
+    <div class="sl-row">
+      <input type="range" id="inspA" min="5" max="30" step="1" value="10" oninput="syncA('inspA','inspAVal','万円')">
+      <div class="sl-val sl-val-a" id="inspAVal">10万円</div>
+    </div>
+  </div>
+
+  <!-- 車B -->
+  <div class="car-col car-col-b sl-b">
+    <div class="car-title car-title-b">車 B</div>
+
+    <div class="sl-label">車体価格（万円）</div>
+    <div class="sl-row">
+      <input type="range" id="priceB" min="10" max="300" step="5" value="120" oninput="syncB('priceB','priceBVal','万円')">
+      <div class="sl-val sl-val-b" id="priceBVal">120万円</div>
+    </div>
+
+    <div class="sl-label">年式</div>
+    <div class="sl-row">
+      <input type="range" id="yearB" min="2010" max="2024" step="1" value="2021" oninput="syncB('yearB','yearBVal','年式')">
+      <div class="sl-val sl-val-b" id="yearBVal">2021年式</div>
+    </div>
+
+    <div class="sl-label">燃費（km/L）</div>
+    <div class="sl-row">
+      <input type="range" id="fuelB" min="5" max="30" step="1" value="20" oninput="syncB('fuelB','fuelBVal','km/L')">
+      <div class="sl-val sl-val-b" id="fuelBVal">20km/L</div>
+    </div>
+
+    <div class="sl-label">年間維持費（万円）</div>
+    <div class="sl-row">
+      <input type="range" id="maintB" min="0" max="30" step="1" value="10" oninput="syncB('maintB','maintBVal','万円/年')">
+      <div class="sl-val sl-val-b" id="maintBVal">10万円/年</div>
+    </div>
+
+    <div class="sl-label">車検費用（万円）</div>
+    <div class="sl-row">
+      <input type="range" id="inspB" min="5" max="30" step="1" value="12" oninput="syncB('inspB','inspBVal','万円')">
+      <div class="sl-val sl-val-b" id="inspBVal">12万円</div>
+    </div>
+  </div>
+</div>
+
+<!-- 勝者バナー -->
+<div class="banner" id="banner"></div>
+
+<!-- 総コストカード -->
+<div class="result-grid">
+  <div class="card card-a">
+    <div class="card-label">車A 総コスト</div>
+    <div class="card-main card-main-a" id="totalA">—</div>
+    <div class="card-sub" id="annualA">年平均 —</div>
+  </div>
+  <div class="card card-b">
+    <div class="card-label">車B 総コスト</div>
+    <div class="card-main card-main-b" id="totalB">—</div>
+    <div class="card-sub" id="annualB">年平均 —</div>
+  </div>
+</div>
+
+<!-- 差額カード -->
+<div class="diff-grid">
+  <div class="diff-card">
+    <div class="diff-label">ガソリン代の差</div>
+    <div class="diff-val" id="gasDiff">—</div>
+  </div>
+  <div class="diff-card">
+    <div class="diff-label">車検＋維持費の差</div>
+    <div class="diff-val" id="maintDiff">—</div>
+  </div>
+</div>
+
+<!-- グラフ -->
+<div class="chart-wrap">
+  <canvas id="myChart" height="260"></canvas>
+</div>
+
+<script>
+let chart = null;
+
+function v(id) { return parseFloat(document.getElementById(id).value); }
+
+function sync(id, valId, unit, fmt) {
+  const val = parseFloat(document.getElementById(id).value);
+  document.getElementById(valId).textContent = (fmt ? fmt(val) : val) + unit;
+  calculate();
+}
+function syncA(id, valId, unit) {
+  const val = parseFloat(document.getElementById(id).value);
+  let text = id === 'yearA' ? val + '年式' : val + unit;
+  document.getElementById(valId).textContent = text;
+  calculate();
+}
+function syncB(id, valId, unit) {
+  const val = parseFloat(document.getElementById(id).value);
+  let text = id === 'yearB' ? val + '年式' : val + unit;
+  document.getElementById(valId).textContent = text;
+  calculate();
+}
+
+function calcCar(price, fuel, maint, insp, years, km, gasPrice) {
+  const gasCost = (km / fuel) * gasPrice * years / 10000; // 万円
+  const inspCount = Math.floor((years - 1) / 2); // 車検回数（初年は車検不要とする）
+  const inspCost = insp * inspCount;
+  const maintCost = maint * years;
+  const total = price + gasCost + inspCost + maintCost;
+  return { total, gasCost, inspCost, maintCost, annual: total / years };
+}
+
+function calculate() {
+  const years = v('years');
+  const km = v('km');
+  const gasPrice = v('gasPrice');
+
+  const A = calcCar(v('priceA'), v('fuelA'), v('maintA'), v('inspA'), years, km, gasPrice);
+  const B = calcCar(v('priceB'), v('fuelB'), v('maintB'), v('inspB'), years, km, gasPrice);
+
+  const fmt = n => Math.round(n).toLocaleString() + '万円';
+  const fmtS = n => Math.round(n * 10) / 10;
+
+  document.getElementById('totalA').textContent = fmt(A.total);
+  document.getElementById('totalB').textContent = fmt(B.total);
+  document.getElementById('annualA').textContent = '年平均 ' + fmt(A.annual);
+  document.getElementById('annualB').textContent = '年平均 ' + fmt(B.annual);
+
+  const gasDiff = Math.abs(A.gasCost - B.gasCost);
+  const maintDiff = Math.abs((A.inspCost + A.maintCost) - (B.inspCost + B.maintCost));
+  document.getElementById('gasDiff').textContent = fmt(gasDiff);
+  document.getElementById('maintDiff').textContent = fmt(maintDiff);
+
+  // Banner
+  const banner = document.getElementById('banner');
+  const diff = Math.abs(A.total - B.total);
+  if (Math.round(A.total) === Math.round(B.total)) {
+    banner.className = 'banner banner-tie';
+    banner.innerHTML = '引き分け！ほぼ同じコストです';
+  } else if (A.total < B.total) {
+    banner.className = 'banner banner-a';
+    banner.innerHTML = '車A がお得！<div class="banner-diff">車Bより <strong>' + fmt(diff) + '</strong> 安い</div>';
+  } else {
+    banner.className = 'banner banner-b';
+    banner.innerHTML = '車B がお得！<div class="banner-diff">車Aより <strong>' + fmt(diff) + '</strong> 安い</div>';
+  }
+
+  // Chart
+  if (chart) chart.destroy();
+  const ctx = document.getElementById('myChart').getContext('2d');
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['車体価格', 'ガソリン代', '車検費用', '維持費'],
+      datasets: [
+        {
+          label: '車A',
+          data: [v('priceA'), A.gasCost, A.inspCost, A.maintCost].map(n => Math.round(n)),
+          backgroundColor: '#3b82f6',
+          borderRadius: 4,
+        },
+        {
+          label: '車B',
+          data: [v('priceB'), B.gasCost, B.inspCost, B.maintCost].map(n => Math.round(n)),
+          backgroundColor: '#ef4444',
+          borderRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 250 },
+      plugins: {
+        legend: { labels: { font: { size: 12 }, boxWidth: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}万円`
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { font: { size: 12 } }, grid: { display: false } },
+        y: {
+          ticks: {
+            font: { size: 11 },
+            callback: v => v + '万'
+          },
+          grid: { color: '#eee' }
+        }
+      }
+    }
+  });
+}
+
+calculate();
+</script>
+</body>
+</html>
