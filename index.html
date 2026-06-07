@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>資産シミュレーター</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+    background: #f2f4f7;
+    color: #1a1a2e;
+    padding: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1a1a2e;
+  }
+  .section {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn {
+    padding: 9px 18px;
+    border: 2px solid #1a6fb5;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a6fb5;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn.active {
+    background: #1a6fb5;
+    color: #fff;
+  }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .slider-label {
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 6px;
+  }
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: #dde3ea;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #1a6fb5;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .slider-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a6fb5;
+    min-width: 60px;
+    text-align: right;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    text-align: center;
+  }
+  .card-age {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+  .card-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  .card-val span { font-size: 13px; font-weight: 400; }
+  .tag {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 5px;
+  }
+  .tag-ok { background: #d4f4e2; color: #1a7a45; }
+  .tag-ng { background: #fde8e8; color: #c0392b; }
+  .chart-wrap {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .row2 {
+    display: flex;
+    gap: 14px;
+  }
+  .row2 > div { flex: 1; }
+  select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 2px solid #dde3ea;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a2e;
+    background: #fff;
+    outline: none;
+    margin-top: 6px;
+  }
+  @media (max-width: 400px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+    .btn { font-size: 13px; padding: 8px 13px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>資産シミュレーター</h1>
+
+<!-- 現金選択 -->
+<div class="section">
+  <div class="section-title">55歳時の現金（初期値）</div>
+  <div class="btn-group" id="cashGroup">
+    <button class="btn" data-val="300" onclick="selectBtn('cashGroup',this)">300万</button>
+    <button class="btn active" data-val="500" onclick="selectBtn('cashGroup',this)">500万</button>
+    <button class="btn" data-val="1000" onclick="selectBtn('cashGroup',this)">1,000万</button>
+    <button class="btn" data-val="1500" onclick="selectBtn('cashGroup',this)">1,500万</button>
+  </div>
+</div>
+
+<!-- 投資信託年利 -->
+<div class="section">
+  <div class="section-title">投資信託 年利</div>
+  <div class="btn-group" id="rateGroup">
+    <button class="btn" data-val="3" onclick="selectBtn('rateGroup',this)">3%</button>
+    <button class="btn active" data-val="5" onclick="selectBtn('rateGroup',this)">5%</button>
+    <button class="btn" data-val="7" onclick="selectBtn('rateGroup',this)">7%</button>
+    <button class="btn" data-val="10" onclick="selectBtn('rateGroup',this)">10%</button>
+  </div>
+</div>
+
+<!-- スライダー -->
+<div class="section">
+  <div class="slider-label">月の生活費</div>
+  <div class="slider-row">
+    <input type="range" id="monthlyExpense" min="20" max="50" step="5" value="30" oninput="updateSlider('monthlyExpense','monthlyExpenseVal','万円/月')">
+    <div class="slider-val" id="monthlyExpenseVal">30万円/月</div>
+  </div>
+  <div class="slider-label" style="margin-top:14px">年間特別支出</div>
+  <div class="slider-row">
+    <input type="range" id="specialExpense" min="0" max="300" step="30" value="60" oninput="updateSlider('specialExpense','specialExpenseVal','万円/年')">
+    <div class="slider-val" id="specialExpenseVal">60万円/年</div>
+  </div>
+</div>
+
+<!-- 特別支出終了年齢 -->
+<div class="section">
+  <div class="section-title">特別支出 終了年齢</div>
+  <div class="btn-group" id="specialEndGroup">
+    <button class="btn active" data-val="65" onclick="selectBtn('specialEndGroup',this)">65歳</button>
+    <button class="btn" data-val="70" onclick="selectBtn('specialEndGroup',this)">70歳</button>
+    <button class="btn" data-val="75" onclick="selectBtn('specialEndGroup',this)">75歳</button>
+  </div>
+</div>
+
+<!-- 取り崩し設定 -->
+<div class="section">
+  <div class="section-title">年間取り崩し（投資信託 → 現金）</div>
+  <div class="btn-group" id="withdrawGroup">
+    <button class="btn active" data-val="0" onclick="selectBtn('withdrawGroup',this)">なし</button>
+    <button class="btn" data-val="60" onclick="selectBtn('withdrawGroup',this)">60万</button>
+    <button class="btn" data-val="120" onclick="selectBtn('withdrawGroup',this)">120万</button>
+    <button class="btn" data-val="240" onclick="selectBtn('withdrawGroup',this)">240万</button>
+    <button class="btn" data-val="360" onclick="selectBtn('withdrawGroup',this)">360万</button>
+  </div>
+  <div class="row2" style="margin-top:12px">
+    <div>
+      <div class="slider-label">開始年齢</div>
+      <select id="withdrawStart" onchange="simulate()">
+        <option value="55">55歳</option>
+        <option value="60">60歳</option>
+        <option value="65" selected>65歳</option>
+        <option value="70">70歳</option>
+        <option value="75">75歳</option>
+      </select>
+    </div>
+    <div>
+      <div class="slider-label">終了年齢</div>
+      <select id="withdrawEnd" onchange="simulate()">
+        <option value="70">70歳</option>
+        <option value="75" selected>75歳</option>
+        <option value="80">80歳</option>
+        <option value="85">85歳</option>
+        <option value="95">95歳</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- 資産カード -->
+<div class="cards" id="cards"></div>
+
+<!-- グラフ -->
+<div class="chart-wrap">
+  <canvas id="myChart" height="280"></canvas>
+</div>
+
+<script>
+const TRUST_INIT = 2700;
+const STOCK_INIT = 1500;
+const DIVIDEND_RATE = 0.035;
+const PENSION_ANNUAL = 180;
+const PENSION_AGE = 65;
+const START_AGE = 55;
+const END_AGE = 95;
+const TARGET = 2000;
+
+let chart = null;
+
+function getVal(groupId) {
+  const active = document.querySelector(`#${groupId} .btn.active`);
+  return active ? parseFloat(active.dataset.val) : 0;
+}
+
+function selectBtn(groupId, el) {
+  document.querySelectorAll(`#${groupId} .btn`).forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  simulate();
+}
+
+function updateSlider(id, valId, unit) {
+  document.getElementById(valId).textContent = document.getElementById(id).value + unit;
+  simulate();
+}
+
+function simulate() {
+  const cash0 = getVal('cashGroup');
+  const rate = getVal('rateGroup') / 100;
+  const monthly = parseFloat(document.getElementById('monthlyExpense').value);
+  const special = parseFloat(document.getElementById('specialExpense').value);
+  const specialEnd = getVal('specialEndGroup');
+  const withdraw = getVal('withdrawGroup');
+  const withdrawStart = parseInt(document.getElementById('withdrawStart').value);
+  const withdrawEnd = parseInt(document.getElementById('withdrawEnd').value);
+
+  const lifeExpense = monthly * 12; // annual living cost from cash
+
+  let trust = TRUST_INIT;
+  let stock = STOCK_INIT;
+  let cash = cash0;
+
+  const ages = [];
+  const trustArr = [];
+  const stockArr = [];
+  const cashArr = [];
+  const totalArr = [];
+
+  for (let age = START_AGE; age <= END_AGE; age++) {
+    // Record at start of year (age 55 = initial state)
+    ages.push(age);
+    trustArr.push(Math.round(trust));
+    stockArr.push(Math.round(stock));
+    cashArr.push(Math.round(cash));
+    totalArr.push(Math.round(trust + stock + cash));
+
+    // --- Year passes ---
+
+    // Trust grows
+    trust = trust * (1 + rate);
+
+    // Dividend from stock → cash
+    const dividend = stock * DIVIDEND_RATE;
+    cash += dividend;
+
+    // Pension from 65
+    if (age >= PENSION_AGE) cash += PENSION_ANNUAL;
+
+    // Living expense from cash
+    cash -= lifeExpense;
+
+    // Special expense
+    if (age < specialEnd) cash -= special;
+
+    // Manual withdrawal: trust → cash
+    if (withdraw > 0 && age >= withdrawStart && age < withdrawEnd) {
+      const w = Math.min(withdraw, Math.max(0, trust));
+      trust -= w;
+      cash += w;
+    }
+
+    // Auto replenish cash from trust if negative
+    if (cash < 0) {
+      const needed = -cash;
+      const fromTrust = Math.min(needed, Math.max(0, trust));
+      trust -= fromTrust;
+      cash += fromTrust;
+      if (cash < 0) cash = 0; // stock held as-is per spec
+    }
+  }
+
+  // Cards
+  const cardAges = [65, 75, 85, 95];
+  const cardsEl = document.getElementById('cards');
+  cardsEl.innerHTML = '';
+  cardAges.forEach(a => {
+    const idx = a - START_AGE;
+    const total = totalArr[idx] ?? 0;
+    const card = document.createElement('div');
+    card.className = 'card';
+    let tag = '';
+    if (a === 95) {
+      tag = total >= TARGET
+        ? `<div class="tag tag-ok">目標超過 +${fmt(total - TARGET)}</div>`
+        : `<div class="tag tag-ng">目標不足 -${fmt(TARGET - total)}</div>`;
+    }
+    card.innerHTML = `<div class="card-age">${a}歳時点</div><div class="card-val">${fmt(total)}<span>万円</span></div>${tag}`;
+    cardsEl.appendChild(card);
+  });
+
+  // Chart
+  if (chart) chart.destroy();
+  const ctx = document.getElementById('myChart').getContext('2d');
+  chart = new Chart(ctx, {
+    data: {
+      labels: ages,
+      datasets: [
+        {
+          type: 'bar',
+          label: '投資信託',
+          data: trustArr,
+          backgroundColor: '#4a9ede',
+          stack: 'assets',
+          borderRadius: 2,
+        },
+        {
+          type: 'bar',
+          label: '高配当株',
+          data: stockArr,
+          backgroundColor: '#f0a04b',
+          stack: 'assets',
+          borderRadius: 2,
+        },
+        {
+          type: 'bar',
+          label: '現金',
+          data: cashArr,
+          backgroundColor: '#6dca8a',
+          stack: 'assets',
+          borderRadius: 2,
+        },
+        {
+          type: 'line',
+          label: '総資産',
+          data: totalArr,
+          borderColor: '#1a1a2e',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.3,
+          yAxisID: 'y',
+        },
+        {
+          type: 'line',
+          label: '目標 2,000万',
+          data: ages.map(() => TARGET),
+          borderColor: '#e74c3c',
+          borderWidth: 1.5,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          yAxisID: 'y',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: { duration: 300 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: { font: { size: 11 }, boxWidth: 12, padding: 10 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}万円`
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { font: { size: 11 }, maxTicksLimit: 9 },
+          grid: { display: false }
+        },
+        y: {
+          stacked: false,
+          ticks: {
+            font: { size: 11 },
+            callback: v => (v / 10000 >= 1 ? (v/10000).toFixed(0)+'億' : v+'万')
+          },
+          grid: { color: '#eee' }
+        }
+      }
+    }
+  });
+}
+
+function fmt(v) {
+  return Math.abs(v).toLocaleString();
+}
+
+// Initial run
+simulate();
+</script>
+</body>
+</html>
