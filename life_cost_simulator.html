@@ -159,18 +159,18 @@ input[type=range]::-webkit-slider-thumb {
   <div class="section-title">クルマ 共通設定</div>
   <div class="sl-label">年間走行距離</div>
   <div class="sl-row">
-    <input type="range" id="km" min="3000" max="30000" step="1000" value="10000" oninput="sl('km','kmVal','km', true)">
-    <div class="sl-val" id="kmVal">10,000km</div>
+    <input type="range" id="km" min="3000" max="30000" step="1000" value="15000" oninput="sl('km','kmVal','km', true)">
+    <div class="sl-val" id="kmVal">15,000km</div>
   </div>
   <div class="sl-label">ガソリン単価</div>
   <div class="sl-row">
-    <input type="range" id="gasPrice" min="130" max="220" step="5" value="165" oninput="sl('gasPrice','gasPriceVal','円/L')">
-    <div class="sl-val" id="gasPriceVal">165円/L</div>
+    <input type="range" id="gasPrice" min="100" max="220" step="5" value="120" oninput="sl('gasPrice','gasPriceVal','円/L')">
+    <div class="sl-val" id="gasPriceVal">120円/L</div>
   </div>
   <div class="sl-label">賃貸時の月駐車場代（1台あたり）</div>
   <div class="sl-row">
-    <input type="range" id="parking" min="0" max="5" step="0.5" value="1.5" oninput="slDec('parking','parkingVal','万円/月')">
-    <div class="sl-val" id="parkingVal">1.5万円/月</div>
+    <input type="range" id="parking" min="0" max="5" step="0.5" value="0.5" oninput="slDec('parking','parkingVal','万円/月')">
+    <div class="sl-val" id="parkingVal">0.5万円/月</div>
   </div>
 </div>
 
@@ -181,25 +181,25 @@ input[type=range]::-webkit-slider-thumb {
     <div>
       <div class="sl-label">車体価格</div>
       <div class="sl-row">
-        <input type="range" id="car1Price" min="50" max="500" step="10" value="200" oninput="sl('car1Price','car1PriceVal','万円')">
-        <div class="sl-val" id="car1PriceVal">200万円</div>
+        <input type="range" id="car1Price" min="50" max="500" step="10" value="60" oninput="sl('car1Price','car1PriceVal','万円')">
+        <div class="sl-val" id="car1PriceVal">60万円</div>
       </div>
       <div class="sl-label">燃費</div>
       <div class="sl-row">
-        <input type="range" id="car1Fuel" min="5" max="30" step="1" value="15" oninput="sl('car1Fuel','car1FuelVal','km/L')">
-        <div class="sl-val" id="car1FuelVal">15km/L</div>
+        <input type="range" id="car1Fuel" min="5" max="30" step="1" value="18" oninput="sl('car1Fuel','car1FuelVal','km/L')">
+        <div class="sl-val" id="car1FuelVal">18km/L</div>
       </div>
-      <div class="sl-label">年間維持費（税・保険）</div>
+      <div class="sl-label">年間維持費（税3万・保険2万・メンテ5万）</div>
       <div class="sl-row">
-        <input type="range" id="car1Maint" min="5" max="30" step="1" value="10" oninput="sl('car1Maint','car1MaintVal','万円/年')">
+        <input type="range" id="car1Maint" min="0" max="30" step="1" value="10" oninput="sl('car1Maint','car1MaintVal','万円/年')">
         <div class="sl-val" id="car1MaintVal">10万円/年</div>
       </div>
     </div>
     <div>
       <div class="sl-label">ローン金利（年）</div>
       <div class="sl-row">
-        <input type="range" id="car1Rate" min="0" max="5" step="0.5" value="2" oninput="slDec('car1Rate','car1RateVal','%')">
-        <div class="sl-val" id="car1RateVal">2.0%</div>
+        <input type="range" id="car1Rate" min="0" max="5" step="0.5" value="0" oninput="slDec('car1Rate','car1RateVal','%')">
+        <div class="sl-val" id="car1RateVal">0.0%</div>
       </div>
       <div class="sl-label">ローン期間</div>
       <div class="sl-row">
@@ -208,8 +208,8 @@ input[type=range]::-webkit-slider-thumb {
       </div>
       <div class="sl-label">車検費（2年ごと）</div>
       <div class="sl-row">
-        <input type="range" id="car1Insp" min="5" max="30" step="1" value="10" oninput="sl('car1Insp','car1InspVal','万円')">
-        <div class="sl-val" id="car1InspVal">10万円</div>
+        <input type="range" id="car1Insp" min="5" max="30" step="1" value="12" oninput="sl('car1Insp','car1InspVal','万円')">
+        <div class="sl-val" id="car1InspVal">12万円</div>
       </div>
     </div>
   </div>
@@ -222,25 +222,25 @@ input[type=range]::-webkit-slider-thumb {
     <div>
       <div class="sl-label">車体価格</div>
       <div class="sl-row">
-        <input type="range" id="car2Price" min="50" max="500" step="10" value="150" oninput="sl('car2Price','car2PriceVal','万円')">
-        <div class="sl-val" id="car2PriceVal">150万円</div>
+        <input type="range" id="car2Price" min="50" max="500" step="10" value="60" oninput="sl('car2Price','car2PriceVal','万円')">
+        <div class="sl-val" id="car2PriceVal">60万円</div>
       </div>
       <div class="sl-label">燃費</div>
       <div class="sl-row">
         <input type="range" id="car2Fuel" min="5" max="30" step="1" value="18" oninput="sl('car2Fuel','car2FuelVal','km/L')">
         <div class="sl-val" id="car2FuelVal">18km/L</div>
       </div>
-      <div class="sl-label">年間維持費（税・保険）</div>
+      <div class="sl-label">年間維持費（税3万・保険2万・メンテ5万）</div>
       <div class="sl-row">
-        <input type="range" id="car2Maint" min="5" max="30" step="1" value="8" oninput="sl('car2Maint','car2MaintVal','万円/年')">
-        <div class="sl-val" id="car2MaintVal">8万円/年</div>
+        <input type="range" id="car2Maint" min="0" max="30" step="1" value="10" oninput="sl('car2Maint','car2MaintVal','万円/年')">
+        <div class="sl-val" id="car2MaintVal">10万円/年</div>
       </div>
     </div>
     <div>
       <div class="sl-label">ローン金利（年）</div>
       <div class="sl-row">
-        <input type="range" id="car2Rate" min="0" max="5" step="0.5" value="2" oninput="slDec('car2Rate','car2RateVal','%')">
-        <div class="sl-val" id="car2RateVal">2.0%</div>
+        <input type="range" id="car2Rate" min="0" max="5" step="0.5" value="0" oninput="slDec('car2Rate','car2RateVal','%')">
+        <div class="sl-val" id="car2RateVal">0.0%</div>
       </div>
       <div class="sl-label">ローン期間</div>
       <div class="sl-row">
@@ -249,8 +249,8 @@ input[type=range]::-webkit-slider-thumb {
       </div>
       <div class="sl-label">車検費（2年ごと）</div>
       <div class="sl-row">
-        <input type="range" id="car2Insp" min="5" max="30" step="1" value="8" oninput="sl('car2Insp','car2InspVal','万円')">
-        <div class="sl-val" id="car2InspVal">8万円</div>
+        <input type="range" id="car2Insp" min="5" max="30" step="1" value="12" oninput="sl('car2Insp','car2InspVal','万円')">
+        <div class="sl-val" id="car2InspVal">12万円</div>
       </div>
     </div>
   </div>
