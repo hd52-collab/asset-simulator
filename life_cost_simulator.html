@@ -63,11 +63,12 @@ input[type=range]::-webkit-slider-thumb {
 .pcard-label { font-size: 11px; color: #666; margin-bottom: 4px; line-height: 1.4; }
 .pcard-val { font-size: 18px; font-weight: 700; }
 .pcard-sub { font-size: 11px; color: #888; margin-top: 2px; }
-.p1 { border-top: 3px solid #16a34a; } .p1 .pcard-val { color: #16a34a; }
-.p2 { border-top: 3px solid #2563eb; } .p2 .pcard-val { color: #2563eb; }
-.p3 { border-top: 3px solid #7c3aed; } .p3 .pcard-val { color: #7c3aed; }
-.p4 { border-top: 3px solid #d97706; } .p4 .pcard-val { color: #d97706; }
-.p5 { border-top: 3px solid #dc2626; } .p5 .pcard-val { color: #dc2626; }
+.p1 { border-top: 3px solid #d97706; } .p1 .pcard-val { color: #d97706; }
+.p2 { border-top: 3px solid #ea580c; } .p2 .pcard-val { color: #ea580c; }
+.p3 { border-top: 3px solid #dc2626; } .p3 .pcard-val { color: #dc2626; }
+.p4 { border-top: 3px solid #16a34a; } .p4 .pcard-val { color: #16a34a; }
+.p5 { border-top: 3px solid #2563eb; } .p5 .pcard-val { color: #2563eb; }
+.p6 { border-top: 3px solid #7c3aed; } .p6 .pcard-val { color: #7c3aed; }
 
 .chart-wrap { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
 .note { font-size: 11px; color: #999; margin-top: 8px; line-height: 1.6; }
@@ -261,8 +262,8 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 <script>
-const COLORS = ['#16a34a','#2563eb','#7c3aed','#d97706','#dc2626'];
-const LABELS = ['賃貸・車なし','賃貸・車1台','賃貸・車2台','持家・車1台','持家・車2台'];
+const COLORS = ['#d97706','#ea580c','#dc2626','#16a34a','#2563eb','#7c3aed'];
+const LABELS = ['持家・車0台','持家・車1台','持家・車2台','賃貸・車0台','賃貸・車1台','賃貸・車2台'];
 let chart = null;
 
 function v(id) { return parseFloat(document.getElementById(id).value); }
@@ -313,9 +314,9 @@ function calc() {
   const gasPrice = v('gasPrice');
   const parking = v('parking');
 
-  // 5パターンの年間コスト計算
-  const cumulative = [[], [], [], [], []];
-  let totals = [0, 0, 0, 0, 0];
+  // 6パターンの年間コスト計算
+  const cumulative = [[], [], [], [], [], []];
+  let totals = [0, 0, 0, 0, 0, 0];
 
   for (let y = 0; y < years; y++) {
     // 賃貸年間コスト
@@ -332,26 +333,22 @@ function calc() {
     const car1Buy  = carAnnualCost(v('car1Price'), v('car1Fuel'), v('car1Maint'), v('car1Rate'), v('car1Loan'), v('car1Insp'), km, gasPrice, 0, y);
     const car2Buy  = carAnnualCost(v('car2Price'), v('car2Fuel'), v('car2Maint'), v('car2Rate'), v('car2Loan'), v('car2Insp'), km, gasPrice, 0, y);
 
-    totals[0] += rentYear;
-    totals[1] += rentYear + car1Rent;
-    totals[2] += rentYear + car1Rent + car2Rent;
-    totals[3] += buyYear + car1Buy;
-    totals[4] += buyYear + car1Buy + car2Buy;
+    // 持家: 0台・1台・2台
+    totals[0] += buyYear;
+    totals[1] += buyYear + car1Buy;
+    totals[2] += buyYear + car1Buy + car2Buy;
+    // 賃貸: 0台・1台・2台
+    totals[3] += rentYear;
+    totals[4] += rentYear + car1Rent;
+    totals[5] += rentYear + car1Rent + car2Rent;
 
-    cumulative[0].push(Math.round(totals[0]));
-    cumulative[1].push(Math.round(totals[1]));
-    cumulative[2].push(Math.round(totals[2]));
-    cumulative[3].push(Math.round(totals[3]));
-    cumulative[4].push(Math.round(totals[4]));
+    for (let i = 0; i < 6; i++) cumulative[i].push(Math.round(totals[i]));
   }
 
   // カード
   const cardsEl = document.getElementById('cards');
   cardsEl.innerHTML = '';
-  const finalTotals = [
-    cumulative[0][years-1], cumulative[1][years-1], cumulative[2][years-1],
-    cumulative[3][years-1], cumulative[4][years-1]
-  ];
+  const finalTotals = cumulative.map(c => c[years-1]);
   const minIdx = finalTotals.indexOf(Math.min(...finalTotals));
 
   LABELS.forEach((label, i) => {
