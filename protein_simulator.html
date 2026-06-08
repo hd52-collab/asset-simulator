@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>タンパク質 習慣シミュレーター</title>
+<title>2606 たんぱく質習慣シュミ</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -91,7 +91,7 @@ input[type=range]::-webkit-slider-thumb {
 </head>
 <body>
 
-<h1>タンパク質 習慣シミュレーター</h1>
+<h1>2606 たんぱく質習慣シュミ</h1>
 <p class="subtitle">毎日の習慣でどれだけ摂れるか試算</p>
 
 <!-- 合計 -->
@@ -164,23 +164,22 @@ input[type=range]::-webkit-slider-thumb {
 <script>
 const FOODS = [
   // [id, name, unit, protein_per_unit, category]
-  { id:'natto',   name:'納豆',          unit:'1パック (45g)',   p:7.4,  cat:'soy'   },
-  { id:'tofu',    name:'豆腐（絹/木綿）', unit:'半丁 (150g)',     p:8.0,  cat:'soy'   },
-  { id:'kinako',  name:'きな粉',         unit:'大さじ3 (18g)',   p:6.5,  cat:'soy'   },
-  { id:'tonyu',   name:'豆乳（無調整）',  unit:'150ml',          p:6.2,  cat:'soy'   },
-  { id:'edamame', name:'枝豆',           unit:'1/2カップ (80g)', p:6.8,  cat:'soy'   },
-  { id:'egg',     name:'たまご',         unit:'1個 (50g)',       p:6.2,  cat:'dairy' },
-  { id:'milk',    name:'牛乳',           unit:'200ml',           p:6.6,  cat:'dairy' },
-  { id:'yogurt',  name:'ヨーグルト',     unit:'1個 (100g)',      p:3.6,  cat:'dairy' },
-  { id:'greek',   name:'ギリシャヨーグルト', unit:'1個 (100g)',  p:10.0, cat:'dairy' },
-  { id:'cheese',  name:'チーズ（スライス）', unit:'1枚 (18g)',   p:4.1,  cat:'dairy' },
-  { id:'chicken', name:'鶏むね肉',       unit:'100g',            p:22.3, cat:'meat'  },
-  { id:'salad_c', name:'サラダチキン',   unit:'1個 (110g)',      p:26.3, cat:'meat'  },
-  { id:'tuna',    name:'ツナ缶',         unit:'1缶 (70g)',       p:12.0, cat:'meat'  },
-  { id:'salmon',  name:'鮭',            unit:'1切れ (100g)',     p:22.5, cat:'meat'  },
-  { id:'pork',    name:'豚ロース',       unit:'100g',            p:19.3, cat:'meat'  },
-  { id:'protein', name:'プロテイン',     unit:'1杯 (25g)',       p:20.0, cat:'supp'  },
-  { id:'amazake', name:'甘酒（米麹）',   unit:'200ml',           p:3.2,  cat:'supp'  },
+  { id:'natto',   name:'納豆',          unit:'1パック (45g)',  p:7.4,  cat:'soy'   },
+  { id:'tofu',    name:'豆腐（絹/木綿）', unit:'半丁 (150g)',   p:8.0,  cat:'soy'   },
+  { id:'kinako',  name:'きな粉',         unit:'大さじ3 (18g)', p:6.5,  cat:'soy'   },
+  { id:'tonyu',   name:'豆乳（無調整）',  unit:'150ml',        p:6.2,  cat:'soy'   },
+  { id:'egg',     name:'たまご',         unit:'1個 (50g)',     p:6.2,  cat:'dairy' },
+  { id:'milk',    name:'牛乳',           unit:'200ml',         p:6.6,  cat:'dairy' },
+  { id:'yogurt',  name:'ヨーグルト',     unit:'1個 (100g)',    p:3.6,  cat:'dairy' },
+  { id:'pcheese', name:'プロセスチーズ', unit:'1個 (18g)',      p:4.1,  cat:'dairy' },
+  { id:'chicken', name:'鶏むね肉',       unit:'100g',          p:22.3, cat:'meat'  },
+  { id:'tuna',    name:'ツナ缶',         unit:'1缶 (70g)',     p:12.0, cat:'meat'  },
+  { id:'saba',    name:'サバ缶',         unit:'1/4缶 (50g)',   p:9.9,  cat:'meat'  },
+  { id:'salmon',  name:'鮭',            unit:'1切れ (100g)',   p:22.5, cat:'meat'  },
+  { id:'beef',    name:'牛ヒレ',         unit:'100g',          p:21.2, cat:'meat'  },
+  { id:'pork',    name:'豚ロース',       unit:'100g',          p:19.3, cat:'meat'  },
+  { id:'protein', name:'プロテイン',     unit:'1杯 (25g)',     p:20.0, cat:'supp'  },
+  { id:'nuts',    name:'ミックスナッツ', unit:'1つかみ (30g)', p:5.4,  cat:'supp'  },
 ];
 
 const counts = {};
