@@ -106,17 +106,12 @@ input[type=range]::-webkit-slider-thumb {
   <div class="section-title">現在の資産</div>
   <div class="sl-label">現金・預金</div>
   <div class="sl-row">
-    <input type="range" id="cash0" min="0" max="2000" step="50" value="100" oninput="sl('cash0','cash0Val','万円')">
+    <input type="range" id="cash0" min="0" max="500" step="10" value="100" oninput="sl('cash0','cash0Val','万円')">
     <div class="sl-val" id="cash0Val">100万円</div>
-  </div>
-  <div class="sl-label">株式</div>
-  <div class="sl-row">
-    <input type="range" id="stock0" min="0" max="2000" step="50" value="0" oninput="sl('stock0','stock0Val','万円')">
-    <div class="sl-val" id="stock0Val">0万円</div>
   </div>
   <div class="sl-label">投資信託（現在の残高）</div>
   <div class="sl-row">
-    <input type="range" id="trust0" min="0" max="2000" step="50" value="0" oninput="sl('trust0','trust0Val','万円')">
+    <input type="range" id="trust0" min="0" max="500" step="10" value="0" oninput="sl('trust0','trust0Val','万円')">
     <div class="sl-val" id="trust0Val">0万円</div>
   </div>
 </div>
@@ -131,11 +126,11 @@ input[type=range]::-webkit-slider-thumb {
   </div>
   <div class="sl-label" style="margin-top:12px">想定年利</div>
   <div class="btn-group" id="rateGroup">
-    <button class="btn" data-val="0" onclick="selBtn('rateGroup',this)">0%</button>
     <button class="btn" data-val="3" onclick="selBtn('rateGroup',this)">3%</button>
     <button class="btn active" data-val="5" onclick="selBtn('rateGroup',this)">5%</button>
     <button class="btn" data-val="7" onclick="selBtn('rateGroup',this)">7%</button>
     <button class="btn" data-val="10" onclick="selBtn('rateGroup',this)">10%</button>
+    <button class="btn" data-val="15" onclick="selBtn('rateGroup',this)">15%</button>
   </div>
 </div>
 
@@ -310,42 +305,79 @@ input[type=range]::-webkit-slider-thumb {
 
 <!-- 教育費 -->
 <div class="section">
-  <div class="section-title">教育費設定（3人共通）</div>
+  <div class="section-title">教育費設定</div>
 
-  <div style="margin-bottom:10px">
-    <div style="font-size:12px;font-weight:700;color:#134e4a;margin-bottom:5px">中学</div>
-    <div class="btn-group" id="jhsType">
-      <button class="btn active" data-val="50" onclick="selBtn('jhsType',this)">公立 50万/年</button>
-      <button class="btn" data-val="140" onclick="selBtn('jhsType',this)">私立 140万/年</button>
+  <!-- 長女 -->
+  <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
+    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長女（12歳・中1）</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 〜夫45歳 / 高校: 夫46〜48歳 / 大学: 夫49〜52歳</div>
+    <div style="font-size:12px;color:#444;margin-bottom:4px">高校</div>
+    <div class="btn-group" id="hs_d">
+      <button class="btn active" data-val="50" onclick="selBtn('hs_d',this)">公立 50万/年</button>
+      <button class="btn" data-val="100" onclick="selBtn('hs_d',this)">私立 100万/年</button>
+    </div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">大学</div>
+    <div class="btn-group" id="univ_d">
+      <button class="btn active" data-val="110" onclick="selBtn('univ_d',this)">国公立 110万/年</button>
+      <button class="btn" data-val="160" onclick="selBtn('univ_d',this)">私立 160万/年</button>
+    </div>
+    <div class="sl-label">一人暮らし補助（月）</div>
+    <div class="sl-row">
+      <input type="range" id="dorm_d" min="0" max="15" step="1" value="7" oninput="sl('dorm_d','dorm_dVal','万円/月')">
+      <div class="sl-val" id="dorm_dVal">7万円/月</div>
     </div>
   </div>
 
-  <div style="margin-bottom:10px">
-    <div style="font-size:12px;font-weight:700;color:#134e4a;margin-bottom:5px">高校</div>
-    <div class="btn-group" id="hsType">
-      <button class="btn active" data-val="50" onclick="selBtn('hsType',this)">公立 50万/年</button>
-      <button class="btn" data-val="100" onclick="selBtn('hsType',this)">私立 100万/年</button>
+  <!-- 長男 -->
+  <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
+    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長男（8歳・小3）</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫47〜49歳 / 高校: 夫50〜52歳 / 大学: 夫53〜56歳</div>
+    <div style="font-size:12px;color:#444;margin-bottom:4px">中学</div>
+    <div class="btn-group" id="jhs_s1">
+      <button class="btn active" data-val="50" onclick="selBtn('jhs_s1',this)">公立 50万/年</button>
+      <button class="btn" data-val="140" onclick="selBtn('jhs_s1',this)">私立 140万/年</button>
+    </div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">高校</div>
+    <div class="btn-group" id="hs_s1">
+      <button class="btn active" data-val="50" onclick="selBtn('hs_s1',this)">公立 50万/年</button>
+      <button class="btn" data-val="100" onclick="selBtn('hs_s1',this)">私立 100万/年</button>
+    </div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">大学</div>
+    <div class="btn-group" id="univ_s1">
+      <button class="btn active" data-val="110" onclick="selBtn('univ_s1',this)">国公立 110万/年</button>
+      <button class="btn" data-val="160" onclick="selBtn('univ_s1',this)">私立 160万/年</button>
+    </div>
+    <div class="sl-label">一人暮らし補助（月）</div>
+    <div class="sl-row">
+      <input type="range" id="dorm_s1" min="0" max="15" step="1" value="7" oninput="sl('dorm_s1','dorm_s1Val','万円/月')">
+      <div class="sl-val" id="dorm_s1Val">7万円/月</div>
     </div>
   </div>
 
-  <div style="margin-bottom:10px">
-    <div style="font-size:12px;font-weight:700;color:#134e4a;margin-bottom:5px">大学</div>
-    <div class="btn-group" id="univType">
-      <button class="btn active" data-val="110" onclick="selBtn('univType',this)">国公立 110万/年</button>
-      <button class="btn" data-val="160" onclick="selBtn('univType',this)">私立 160万/年</button>
+  <!-- 次男 -->
+  <div>
+    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">次男（6歳・小1）</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫49〜51歳 / 高校: 夫52〜54歳 / 大学: 夫55〜58歳</div>
+    <div style="font-size:12px;color:#444;margin-bottom:4px">中学</div>
+    <div class="btn-group" id="jhs_s2">
+      <button class="btn active" data-val="50" onclick="selBtn('jhs_s2',this)">公立 50万/年</button>
+      <button class="btn" data-val="140" onclick="selBtn('jhs_s2',this)">私立 140万/年</button>
     </div>
-  </div>
-
-  <div class="sl-label">大学時 一人暮らし補助（月・大学生1人あたり）</div>
-  <div class="sl-row">
-    <input type="range" id="dormM" min="0" max="15" step="1" value="7" oninput="sl('dormM','dormMVal','万円/月')">
-    <div class="sl-val" id="dormMVal">7万円/月</div>
-  </div>
-
-  <div style="font-size:10px;color:#aaa;margin-top:10px;line-height:1.9">
-    長女(12歳): 中学〜夫45歳 / 高校 夫46〜48歳 / 大学 夫49〜52歳<br>
-    長男(8歳):  中学 夫47〜49歳 / 高校 夫50〜52歳 / 大学 夫53〜56歳<br>
-    次男(6歳):  中学 夫49〜51歳 / 高校 夫52〜54歳 / 大学 夫55〜58歳
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">高校</div>
+    <div class="btn-group" id="hs_s2">
+      <button class="btn active" data-val="50" onclick="selBtn('hs_s2',this)">公立 50万/年</button>
+      <button class="btn" data-val="100" onclick="selBtn('hs_s2',this)">私立 100万/年</button>
+    </div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">大学</div>
+    <div class="btn-group" id="univ_s2">
+      <button class="btn active" data-val="110" onclick="selBtn('univ_s2',this)">国公立 110万/年</button>
+      <button class="btn" data-val="160" onclick="selBtn('univ_s2',this)">私立 160万/年</button>
+    </div>
+    <div class="sl-label">一人暮らし補助（月）</div>
+    <div class="sl-row">
+      <input type="range" id="dorm_s2" min="0" max="15" step="1" value="7" oninput="sl('dorm_s2','dorm_s2Val','万円/月')">
+      <div class="sl-val" id="dorm_s2Val">7万円/月</div>
+    </div>
   </div>
 </div>
 
@@ -446,14 +478,12 @@ function updateReviewInfo() {
   document.getElementById('annualSaving').textContent = (cancel * 12).toLocaleString() + '万円';
 }
 
-function eduCost(y, jhs, hs, univ, dormM) {
+function eduCostChild(k0, y, jhs, hs, univ, dormM) {
+  const age = k0 + y;
   let cost = 0;
-  for (const k0 of KIDS0) {
-    const age = k0 + y;
-    if (age >= 12 && age <= 14) cost += jhs;
-    if (age >= 15 && age <= 17) cost += hs;
-    if (age >= 18 && age <= 21) cost += univ + dormM * 12;
-  }
+  if (age >= 12 && age <= 14) cost += jhs;
+  if (age >= 15 && age <= 17) cost += hs;
+  if (age >= 18 && age <= 21) cost += univ + dormM * 12;
   return cost;
 }
 
@@ -461,10 +491,10 @@ function simulate() {
   const rate      = getBtn('rateGroup') / 100;
   const hRetire   = getBtn('husbRetire');
   const wRetire   = getBtn('wifeRetire');
-  const jhs       = getBtn('jhsType');
-  const hs        = getBtn('hsType');
-  const univ      = getBtn('univType');
-  const dorm      = v('dormM');
+  // per-child education settings
+  const hs_d    = getBtn('hs_d');    const univ_d  = getBtn('univ_d');  const dorm_d  = v('dorm_d');
+  const jhs_s1  = getBtn('jhs_s1'); const hs_s1   = getBtn('hs_s1');   const univ_s1 = getBtn('univ_s1'); const dorm_s1 = v('dorm_s1');
+  const jhs_s2  = getBtn('jhs_s2'); const hs_s2   = getBtn('hs_s2');   const univ_s2 = getBtn('univ_s2'); const dorm_s2 = v('dorm_s2');
   const insMBase  = v('insM');
   const insCancelM= v('insCancel');
   const insTrustM = v('insToTrust');
@@ -479,7 +509,6 @@ function simulate() {
 
   let cashB = v('cash0'), trustB = v('trust0');
   let cashA = cashB,      trustA = trustB;
-  const stock = v('stock0');
 
   const ages=[], totB=[], totA=[], eduArr=[], incArr=[], expArr=[];
 
@@ -488,8 +517,8 @@ function simulate() {
     const wa = WIFE_START + y;
 
     ages.push(ha);
-    totB.push(Math.round(cashB + trustB + stock));
-    totA.push(Math.round(cashA + trustA + stock));
+    totB.push(Math.round(cashB + trustB));
+    totA.push(Math.round(cashA + trustA));
 
     // Income
     let inc = 0;
@@ -505,8 +534,10 @@ function simulate() {
       if (l.p > 0 && y < l.y) loanAnn += annualPmt(l.p, l.r, l.y);
     }
 
-    // Education
-    const edu = eduCost(y, jhs, hs, univ, dorm);
+    // Education (per child)
+    const edu = eduCostChild(12, y, 50, hs_d, univ_d, dorm_d)
+              + eduCostChild(8,  y, jhs_s1, hs_s1, univ_s1, dorm_s1)
+              + eduCostChild(6,  y, jhs_s2, hs_s2, univ_s2, dorm_s2);
     eduArr.push(Math.round(edu));
 
     // Living
@@ -530,14 +561,12 @@ function simulate() {
     trustB += tcB;
     cashB  += inc - eB - tcB;
     if (cashB < 0 && trustB > 0) { const d = Math.min(-cashB, trustB); trustB -= d; cashB += d; }
-    if (cashB < 0) cashB = 0;
 
     // AFTER
     trustA *= (1 + rate);
     trustA += tcA;
     cashA  += inc - eA - tcA;
     if (cashA < 0 && trustA > 0) { const d = Math.min(-cashA, trustA); trustA -= d; cashA += d; }
-    if (cashA < 0) cashA = 0;
   }
 
   // === AGE CARDS ===
@@ -553,8 +582,8 @@ function simulate() {
       ? (a >= 0 ? '<div class="tag-ok">あり</div>' : '<div class="tag-ng">枯渇</div>')
       : '';
     d.innerHTML = `<div class="acard-age">夫${age}歳</div>
-      <div class="acard-before">${Math.max(0,b).toLocaleString()}<span class="acard-unit">万</span></div>
-      <div class="acard-after">${Math.max(0,a).toLocaleString()}<span class="acard-unit">万</span></div>
+      <div class="acard-before">${b.toLocaleString()}<span class="acard-unit">万</span></div>
+      <div class="acard-after">${a.toLocaleString()}<span class="acard-unit">万</span></div>
       ${diff > 0 ? `<div class="acard-diff">+${diff.toLocaleString()}万</div>` : ''}${tag}`;
     cardEl.appendChild(d);
   });
