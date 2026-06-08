@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>タンパク質 習慣シミュレーター</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+  background: #f0fdf4; color: #1a2e1a;
+  padding: 16px; max-width: 480px; margin: 0 auto;
+}
+h1 { font-size: 20px; font-weight: 700; color: #16a34a; margin-bottom: 2px; }
+.subtitle { font-size: 12px; color: #888; margin-bottom: 16px; }
+
+/* 合計ボックス */
+.total-box {
+  background: #16a34a; color: #fff;
+  border-radius: 16px; padding: 16px 20px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.total-g { font-size: 44px; font-weight: 800; line-height: 1; }
+.total-unit { font-size: 14px; font-weight: 400; margin-left: 4px; opacity: 0.85; align-self: flex-end; padding-bottom: 6px; }
+.total-right { text-align: right; }
+.total-label { font-size: 11px; opacity: 0.8; margin-bottom: 2px; }
+.total-target { font-size: 18px; font-weight: 700; }
+.total-pct { font-size: 13px; opacity: 0.85; }
+
+/* 進捗バー */
+.bar-wrap { background: #dcfce7; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
+.bar-track { background: #bbf7d0; border-radius: 6px; height: 14px; position: relative; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 6px; background: #16a34a; transition: width 0.3s; min-width: 4px; }
+.bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: #16a34a; font-weight: 600; margin-top: 4px; }
+
+/* 目標設定 */
+.section {
+  background: #fff; border-radius: 14px; padding: 14px;
+  margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.section-title {
+  font-size: 11px; font-weight: 700; color: #888; letter-spacing: 0.05em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.sl-row { display: flex; align-items: center; gap: 8px; }
+input[type=range] {
+  flex: 1; -webkit-appearance: none; height: 4px;
+  border-radius: 2px; background: #d1fae5; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px;
+  border-radius: 50%; background: #16a34a; cursor: pointer;
+}
+.sl-val { font-size: 13px; font-weight: 700; color: #16a34a; min-width: 48px; text-align: right; }
+.goal-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.goal-btn {
+  padding: 6px 12px; border: 2px solid #16a34a; border-radius: 8px;
+  background: #fff; color: #16a34a; font-size: 12px; font-weight: 700;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.goal-btn.active { background: #16a34a; color: #fff; }
+
+/* カテゴリ */
+.cat-title {
+  font-size: 11px; font-weight: 700; color: #16a34a; letter-spacing: 0.05em;
+  margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #d1fae5;
+}
+/* 食品行 */
+.food-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid #f0f0f0;
+}
+.food-row:last-child { border-bottom: none; }
+.food-info { flex: 1; min-width: 0; }
+.food-name { font-size: 13px; font-weight: 600; }
+.food-sub  { font-size: 10px; color: #888; margin-top: 1px; }
+.food-p    { font-size: 11px; color: #16a34a; font-weight: 700; margin-top: 1px; }
+.counter   { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.cnt-btn {
+  width: 28px; height: 28px; border-radius: 8px; border: none;
+  background: #dcfce7; color: #16a34a; font-size: 18px; font-weight: 700;
+  line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.cnt-btn:active { background: #bbf7d0; }
+.cnt-val { font-size: 16px; font-weight: 800; color: #16a34a; min-width: 20px; text-align: center; }
+.cnt-sub  { font-size: 10px; color: #888; text-align: center; margin-top: 1px; }
+
+.note { font-size: 10px; color: #aaa; margin-top: 8px; line-height: 1.6; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>タンパク質 習慣シミュレーター</h1>
+<p class="subtitle">毎日の習慣でどれだけ摂れるか試算</p>
+
+<!-- 合計 -->
+<div class="total-box">
+  <div style="display:flex;align-items:flex-end">
+    <div class="total-g" id="totalG">0</div>
+    <div class="total-unit">g / 日</div>
+  </div>
+  <div class="total-right">
+    <div class="total-label">目標</div>
+    <div class="total-target" id="targetG">— g</div>
+    <div class="total-pct" id="totalPct">—%</div>
+  </div>
+</div>
+
+<!-- 進捗バー -->
+<div class="bar-wrap">
+  <div class="bar-track">
+    <div class="bar-fill" id="barFill" style="width:0%"></div>
+  </div>
+  <div class="bar-labels">
+    <span>0g</span>
+    <span id="barMid">—</span>
+    <span id="barMax">— g</span>
+  </div>
+</div>
+
+<!-- 目標設定 -->
+<div class="section">
+  <div class="section-title">目標設定</div>
+  <div style="font-size:12px;color:#444;margin-bottom:4px">体重</div>
+  <div class="sl-row">
+    <input type="range" id="weight" min="40" max="120" step="1" value="70" oninput="onWeight()">
+    <div class="sl-val" id="weightVal">70 kg</div>
+  </div>
+  <div style="font-size:12px;color:#444;margin-top:10px;margin-bottom:4px">目標（体重 × ?g）</div>
+  <div class="goal-row" id="goalMult">
+    <button class="goal-btn" data-val="1.0" onclick="selGoal(this)">×1.0<br><span style="font-size:10px;font-weight:400">最低限</span></button>
+    <button class="goal-btn active" data-val="1.5" onclick="selGoal(this)">×1.5<br><span style="font-size:10px;font-weight:400">推奨</span></button>
+    <button class="goal-btn" data-val="2.0" onclick="selGoal(this)">×2.0<br><span style="font-size:10px;font-weight:400">筋トレ</span></button>
+  </div>
+</div>
+
+<!-- 大豆系 -->
+<div class="section">
+  <div class="cat-title">🫘 大豆系</div>
+  <div id="cat-soy"></div>
+</div>
+
+<!-- 卵・乳製品 -->
+<div class="section">
+  <div class="cat-title">🥚 卵・乳製品</div>
+  <div id="cat-dairy"></div>
+</div>
+
+<!-- 肉・魚 -->
+<div class="section">
+  <div class="cat-title">🍗 肉・魚</div>
+  <div id="cat-meat"></div>
+</div>
+
+<!-- サプリ -->
+<div class="section">
+  <div class="cat-title">💊 サプリ・その他</div>
+  <div id="cat-supp"></div>
+</div>
+
+<p class="note">※ タンパク質量は目安値。食品により個体差あり。</p>
+
+<script>
+const FOODS = [
+  // [id, name, unit, protein_per_unit, category]
+  { id:'natto',   name:'納豆',          unit:'1パック (45g)',   p:7.4,  cat:'soy'   },
+  { id:'tofu',    name:'豆腐（絹/木綿）', unit:'半丁 (150g)',     p:8.0,  cat:'soy'   },
+  { id:'kinako',  name:'きな粉',         unit:'大さじ3 (18g)',   p:6.5,  cat:'soy'   },
+  { id:'tonyu',   name:'豆乳（無調整）',  unit:'150ml',          p:6.2,  cat:'soy'   },
+  { id:'edamame', name:'枝豆',           unit:'1/2カップ (80g)', p:6.8,  cat:'soy'   },
+  { id:'egg',     name:'たまご',         unit:'1個 (50g)',       p:6.2,  cat:'dairy' },
+  { id:'milk',    name:'牛乳',           unit:'200ml',           p:6.6,  cat:'dairy' },
+  { id:'yogurt',  name:'ヨーグルト',     unit:'1個 (100g)',      p:3.6,  cat:'dairy' },
+  { id:'greek',   name:'ギリシャヨーグルト', unit:'1個 (100g)',  p:10.0, cat:'dairy' },
+  { id:'cheese',  name:'チーズ（スライス）', unit:'1枚 (18g)',   p:4.1,  cat:'dairy' },
+  { id:'chicken', name:'鶏むね肉',       unit:'100g',            p:22.3, cat:'meat'  },
+  { id:'salad_c', name:'サラダチキン',   unit:'1個 (110g)',      p:26.3, cat:'meat'  },
+  { id:'tuna',    name:'ツナ缶',         unit:'1缶 (70g)',       p:12.0, cat:'meat'  },
+  { id:'salmon',  name:'鮭',            unit:'1切れ (100g)',     p:22.5, cat:'meat'  },
+  { id:'pork',    name:'豚ロース',       unit:'100g',            p:19.3, cat:'meat'  },
+  { id:'protein', name:'プロテイン',     unit:'1杯 (25g)',       p:20.0, cat:'supp'  },
+  { id:'amazake', name:'甘酒（米麹）',   unit:'200ml',           p:3.2,  cat:'supp'  },
+];
+
+const counts = {};
+FOODS.forEach(f => counts[f.id] = 0);
+
+function buildList(catId, catKey) {
+  const el = document.getElementById('cat-' + catId);
+  FOODS.filter(f => f.cat === catKey).forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'food-row';
+    row.innerHTML = `
+      <div class="food-info">
+        <div class="food-name">${f.name}</div>
+        <div class="food-sub">${f.unit}</div>
+        <div class="food-p" id="fp_${f.id}">+0g</div>
+      </div>
+      <div class="counter">
+        <button class="cnt-btn" onclick="change('${f.id}',-1)">−</button>
+        <div>
+          <div class="cnt-val" id="cv_${f.id}">0</div>
+          <div class="cnt-sub">個/日</div>
+        </div>
+        <button class="cnt-btn" onclick="change('${f.id}',1)">＋</button>
+      </div>`;
+    el.appendChild(row);
+  });
+}
+
+buildList('soy',   'soy');
+buildList('dairy', 'dairy');
+buildList('meat',  'meat');
+buildList('supp',  'supp');
+
+function change(id, delta) {
+  counts[id] = Math.max(0, Math.min(5, counts[id] + delta));
+  const f = FOODS.find(x => x.id === id);
+  document.getElementById('cv_' + id).textContent = counts[id];
+  document.getElementById('fp_' + id).textContent =
+    counts[id] === 0 ? '+0g' : '+' + (f.p * counts[id]).toFixed(1) + 'g';
+  update();
+}
+
+function getTarget() {
+  const w = parseFloat(document.getElementById('weight').value);
+  const m = parseFloat(document.querySelector('#goalMult .goal-btn.active').dataset.val);
+  return Math.round(w * m);
+}
+
+function onWeight() {
+  document.getElementById('weightVal').textContent = document.getElementById('weight').value + ' kg';
+  update();
+}
+
+function selGoal(btn) {
+  document.querySelectorAll('#goalMult .goal-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  update();
+}
+
+function update() {
+  const total = FOODS.reduce((sum, f) => sum + f.p * counts[f.id], 0);
+  const target = getTarget();
+  const pct = Math.min(Math.round(total / target * 100), 999);
+
+  document.getElementById('totalG').textContent  = total.toFixed(1);
+  document.getElementById('targetG').textContent = target + 'g';
+  document.getElementById('totalPct').textContent = pct + '%';
+
+  const fillW = Math.min(total / target * 100, 100);
+  document.getElementById('barFill').style.width = fillW + '%';
+  document.getElementById('barFill').style.background =
+    pct >= 100 ? '#16a34a' : pct >= 70 ? '#84cc16' : '#facc15';
+
+  document.getElementById('barMid').textContent = Math.round(target / 2) + 'g';
+  document.getElementById('barMax').textContent = target + 'g';
+
+  // 合計ボックスの色
+  const box = document.querySelector('.total-box');
+  box.style.background = pct >= 100 ? '#16a34a' : pct >= 70 ? '#65a30d' : '#ca8a04';
+}
+
+update();
+</script>
+</body>
+</html>
