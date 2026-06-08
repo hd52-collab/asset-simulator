@@ -70,6 +70,41 @@ input[type=range]::-webkit-slider-thumb {
 .loan-block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 .loan-title { font-size: 13px; font-weight: 700; color: #134e4a; margin-bottom: 6px; }
 
+/* 保険テーブル */
+.ins-head {
+  display: grid; grid-template-columns: 28px 1fr 1fr 46px;
+  gap: 4px; padding: 4px 0 6px; border-bottom: 2px solid #e2e8f0;
+  font-size: 10px; font-weight: 700; color: #888; text-align: center;
+}
+.ins-row {
+  display: grid; grid-template-columns: 28px 1fr 1fr 46px;
+  gap: 4px; align-items: center; padding: 5px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+.ins-row:last-child { border-bottom: none; }
+.ins-num { font-size: 11px; color: #888; text-align: center; font-weight: 600; }
+.ins-input {
+  width: 100%; padding: 5px 4px; border: 1px solid #dde3ea; border-radius: 6px;
+  font-size: 12px; text-align: right; color: #1a2e2e; background: #fafafa;
+}
+.ins-input:focus { outline: none; border-color: #0d9488; background: #fff; }
+.ins-cancel-btn {
+  padding: 5px 4px; border: 1.5px solid #dc2626; border-radius: 6px;
+  background: #fff; color: #dc2626; font-size: 11px; font-weight: 700;
+  cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent;
+}
+.ins-cancel-btn.active { background: #dc2626; color: #fff; }
+.ins-summary {
+  background: #fef9ec; border: 1px solid #fbbf24; border-radius: 8px;
+  padding: 8px 12px; margin-top: 10px; font-size: 12px; line-height: 1.8;
+}
+.ins-summary span { font-weight: 700; color: #b45309; }
+.ins-summary-after {
+  background: #f0fdf9; border: 1px solid #99f6e4; border-radius: 8px;
+  padding: 8px 12px; margin-top: 6px; font-size: 12px; line-height: 1.8;
+}
+.ins-summary-after span { font-weight: 700; color: #0d9488; }
+
 .age-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 12px; }
 .acard {
   background: #fff; border-radius: 12px; padding: 8px 5px;
@@ -91,7 +126,7 @@ input[type=range]::-webkit-slider-thumb {
 <body>
 
 <h1>2606（A）資産シミュレーション</h1>
-<p class="subtitle">現状 vs 保険見直し後の資産推移比較</p>
+<p class="subtitle">現状 vs 保険解約→株式投資 後の資産推移比較</p>
 
 <div class="fam-bar">
   <div class="fam-item"><span class="fam-name">夫 44歳</span><span class="fam-desc">〜75歳</span></div>
@@ -186,120 +221,115 @@ input[type=range]::-webkit-slider-thumb {
   <div class="section-title">ローン</div>
 
   <div class="loan-block">
-    <div class="loan-title">🏠 住宅ローン</div>
+    <div class="loan-title">🏠 住宅ローン ①</div>
     <div class="sl-label">残高</div>
-    <div class="sl-row">
-      <input type="range" id="mortP" min="0" max="5000" step="100" value="2500" oninput="updateLoans()">
-      <div class="sl-val" id="mortPVal">2,500万円</div>
-    </div>
+    <div class="sl-row"><input type="range" id="mortP" min="0" max="5000" step="100" value="2500" oninput="updateLoans()"><div class="sl-val" id="mortPVal">2,500万円</div></div>
     <div class="sl-label">残返済年数</div>
-    <div class="sl-row">
-      <input type="range" id="mortY" min="1" max="35" step="1" value="25" oninput="updateLoans()">
-      <div class="sl-val" id="mortYVal">25年</div>
-    </div>
+    <div class="sl-row"><input type="range" id="mortY" min="1" max="35" step="1" value="25" oninput="updateLoans()"><div class="sl-val" id="mortYVal">25年</div></div>
     <div class="sl-label">金利（年）</div>
-    <div class="sl-row">
-      <input type="range" id="mortR" min="0" max="5" step="0.1" value="1.5" oninput="updateLoans()">
-      <div class="sl-val" id="mortRVal">1.5%</div>
-    </div>
+    <div class="sl-row"><input type="range" id="mortR" min="0" max="5" step="0.1" value="1.5" oninput="updateLoans()"><div class="sl-val" id="mortRVal">1.5%</div></div>
     <div class="chip" id="mortChip">月返済: —</div>
   </div>
 
   <div class="loan-block">
-    <div class="loan-title">🚗 カーローン</div>
+    <div class="loan-title">🏠 住宅ローン ②</div>
     <div class="sl-label">残高</div>
-    <div class="sl-row">
-      <input type="range" id="carP" min="0" max="500" step="10" value="100" oninput="updateLoans()">
-      <div class="sl-val" id="carPVal">100万円</div>
-    </div>
+    <div class="sl-row"><input type="range" id="mort2P" min="0" max="5000" step="100" value="0" oninput="updateLoans()"><div class="sl-val" id="mort2PVal">0万円</div></div>
     <div class="sl-label">残返済年数</div>
-    <div class="sl-row">
-      <input type="range" id="carY" min="0" max="7" step="1" value="3" oninput="updateLoans()">
-      <div class="sl-val" id="carYVal">3年</div>
-    </div>
+    <div class="sl-row"><input type="range" id="mort2Y" min="1" max="35" step="1" value="20" oninput="updateLoans()"><div class="sl-val" id="mort2YVal">20年</div></div>
     <div class="sl-label">金利（年）</div>
-    <div class="sl-row">
-      <input type="range" id="carR" min="0" max="10" step="0.5" value="3.0" oninput="updateLoans()">
-      <div class="sl-val" id="carRVal">3.0%</div>
-    </div>
+    <div class="sl-row"><input type="range" id="mort2R" min="0" max="5" step="0.1" value="1.5" oninput="updateLoans()"><div class="sl-val" id="mort2RVal">1.5%</div></div>
+    <div class="chip" id="mort2Chip">借入なし</div>
+  </div>
+
+  <div class="loan-block">
+    <div class="loan-title">🚗 カーローン ①</div>
+    <div class="sl-label">残高</div>
+    <div class="sl-row"><input type="range" id="carP" min="0" max="500" step="10" value="100" oninput="updateLoans()"><div class="sl-val" id="carPVal">100万円</div></div>
+    <div class="sl-label">残返済年数</div>
+    <div class="sl-row"><input type="range" id="carY" min="0" max="7" step="1" value="3" oninput="updateLoans()"><div class="sl-val" id="carYVal">3年</div></div>
+    <div class="sl-label">金利（年）</div>
+    <div class="sl-row"><input type="range" id="carR" min="0" max="10" step="0.5" value="3.0" oninput="updateLoans()"><div class="sl-val" id="carRVal">3.0%</div></div>
     <div class="chip" id="carChip">月返済: —</div>
   </div>
 
   <div class="loan-block">
-    <div class="loan-title">💳 その他借入 1</div>
+    <div class="loan-title">🚗 カーローン ②</div>
     <div class="sl-label">残高</div>
-    <div class="sl-row">
-      <input type="range" id="l1P" min="0" max="500" step="10" value="0" oninput="updateLoans()">
-      <div class="sl-val" id="l1PVal">0万円</div>
-    </div>
+    <div class="sl-row"><input type="range" id="car2P" min="0" max="500" step="10" value="0" oninput="updateLoans()"><div class="sl-val" id="car2PVal">0万円</div></div>
     <div class="sl-label">残返済年数</div>
-    <div class="sl-row">
-      <input type="range" id="l1Y" min="1" max="10" step="1" value="3" oninput="updateLoans()">
-      <div class="sl-val" id="l1YVal">3年</div>
-    </div>
+    <div class="sl-row"><input type="range" id="car2Y" min="0" max="7" step="1" value="3" oninput="updateLoans()"><div class="sl-val" id="car2YVal">3年</div></div>
     <div class="sl-label">金利（年）</div>
-    <div class="sl-row">
-      <input type="range" id="l1R" min="0" max="18" step="0.5" value="5.0" oninput="updateLoans()">
-      <div class="sl-val" id="l1RVal">5.0%</div>
-    </div>
+    <div class="sl-row"><input type="range" id="car2R" min="0" max="10" step="0.5" value="3.0" oninput="updateLoans()"><div class="sl-val" id="car2RVal">3.0%</div></div>
+    <div class="chip" id="car2Chip">借入なし</div>
+  </div>
+
+  <div class="loan-block">
+    <div class="loan-title">💳 その他借入 ①</div>
+    <div class="sl-label">残高</div>
+    <div class="sl-row"><input type="range" id="l1P" min="0" max="500" step="10" value="0" oninput="updateLoans()"><div class="sl-val" id="l1PVal">0万円</div></div>
+    <div class="sl-label">残返済年数</div>
+    <div class="sl-row"><input type="range" id="l1Y" min="1" max="10" step="1" value="3" oninput="updateLoans()"><div class="sl-val" id="l1YVal">3年</div></div>
+    <div class="sl-label">金利（年）</div>
+    <div class="sl-row"><input type="range" id="l1R" min="0" max="18" step="0.5" value="5.0" oninput="updateLoans()"><div class="sl-val" id="l1RVal">5.0%</div></div>
     <div class="chip" id="l1Chip">借入なし</div>
   </div>
 
   <div class="loan-block">
-    <div class="loan-title">💳 その他借入 2</div>
+    <div class="loan-title">💳 その他借入 ②</div>
     <div class="sl-label">残高</div>
-    <div class="sl-row">
-      <input type="range" id="l2P" min="0" max="500" step="10" value="0" oninput="updateLoans()">
-      <div class="sl-val" id="l2PVal">0万円</div>
-    </div>
+    <div class="sl-row"><input type="range" id="l2P" min="0" max="500" step="10" value="0" oninput="updateLoans()"><div class="sl-val" id="l2PVal">0万円</div></div>
     <div class="sl-label">残返済年数</div>
-    <div class="sl-row">
-      <input type="range" id="l2Y" min="1" max="10" step="1" value="3" oninput="updateLoans()">
-      <div class="sl-val" id="l2YVal">3年</div>
-    </div>
+    <div class="sl-row"><input type="range" id="l2Y" min="1" max="10" step="1" value="3" oninput="updateLoans()"><div class="sl-val" id="l2YVal">3年</div></div>
     <div class="sl-label">金利（年）</div>
-    <div class="sl-row">
-      <input type="range" id="l2R" min="0" max="18" step="0.5" value="5.0" oninput="updateLoans()">
-      <div class="sl-val" id="l2RVal">5.0%</div>
-    </div>
+    <div class="sl-row"><input type="range" id="l2R" min="0" max="18" step="0.5" value="5.0" oninput="updateLoans()"><div class="sl-val" id="l2RVal">5.0%</div></div>
     <div class="chip" id="l2Chip">借入なし</div>
+  </div>
+
+  <div class="loan-block">
+    <div class="loan-title">💳 その他借入 ③</div>
+    <div class="sl-label">残高</div>
+    <div class="sl-row"><input type="range" id="l3P" min="0" max="500" step="10" value="0" oninput="updateLoans()"><div class="sl-val" id="l3PVal">0万円</div></div>
+    <div class="sl-label">残返済年数</div>
+    <div class="sl-row"><input type="range" id="l3Y" min="1" max="10" step="1" value="3" oninput="updateLoans()"><div class="sl-val" id="l3YVal">3年</div></div>
+    <div class="sl-label">金利（年）</div>
+    <div class="sl-row"><input type="range" id="l3R" min="0" max="18" step="0.5" value="5.0" oninput="updateLoans()"><div class="sl-val" id="l3RVal">5.0%</div></div>
+    <div class="chip" id="l3Chip">借入なし</div>
   </div>
 </div>
 
-<!-- 生命保険 -->
+<!-- 保険 10件 -->
 <div class="section">
-  <div class="section-title">生命保険（現状）</div>
-  <div class="sl-label">加入件数</div>
-  <div class="btn-group" id="insCount">
-    <button class="btn" data-val="1" onclick="selBtn('insCount',this)">1件</button>
-    <button class="btn active" data-val="2" onclick="selBtn('insCount',this)">2件</button>
-    <button class="btn" data-val="3" onclick="selBtn('insCount',this)">3件</button>
-    <button class="btn" data-val="4" onclick="selBtn('insCount',this)">4件</button>
-    <button class="btn" data-val="5" onclick="selBtn('insCount',this)">5件以上</button>
+  <div class="section-title">保険（10件まで）</div>
+  <div class="ins-head">
+    <div></div>
+    <div>月額(万)</div>
+    <div>返戻金(万)</div>
+    <div>解約</div>
   </div>
-  <div class="sl-label" style="margin-top:10px">月額保険料（全件合計）</div>
-  <div class="sl-row">
-    <input type="range" id="insM" min="0" max="15" step="0.5" value="3" oninput="sl('insM','insMVal','万円/月')">
-    <div class="sl-val" id="insMVal">3万円/月</div>
+  <div id="insList">
+    <!-- JS生成 -->
+  </div>
+  <div class="ins-summary" id="insSummary">
+    現状の保険料合計: <span id="insTotalDisp">0</span>万円/月
   </div>
 </div>
 
 <!-- 見直し設定 -->
 <div class="section-review">
-  <div class="section-title">✅ 保険見直し設定</div>
-  <div class="sl-label">解約する保険の月額</div>
-  <div class="sl-row">
-    <input type="range" id="insCancel" min="0" max="10" step="0.5" value="1" oninput="sl('insCancel','insCancelVal','万円/月')">
-    <div class="sl-val" id="insCancelVal">1万円/月</div>
+  <div class="section-title">✅ 保険解約 → 投資信託へ振替</div>
+  <div id="insCancelSummary" style="font-size:12px;color:#0d9488;margin-bottom:10px;font-weight:600;line-height:1.8">
+    解約する保険料: <span id="insCancelMDisp">0</span>万円/月<br>
+    解約返戻金（一時金）: <span id="insLumpDisp">0</span>万円
   </div>
-  <div class="sl-label">うち投資信託へ振替（月）</div>
+  <div class="sl-label">解約保険料のうち投資信託へ振替（月）</div>
   <div class="sl-row">
     <input type="range" id="insToTrust" min="0" max="10" step="0.5" value="1" oninput="sl('insToTrust','insToTrustVal','万円/月')">
     <div class="sl-val" id="insToTrustVal">1万円/月</div>
   </div>
   <div style="font-size:11px;color:#0d9488;margin-top:10px;font-weight:600">
     見直し後の月額積立: <span id="newTrustM">4万円</span>／月<br>
-    年間削減効果: <span id="annualSaving">12万円</span>
+    解約返戻金は初年度に現金へ一括加算
   </div>
 </div>
 
@@ -310,16 +340,19 @@ input[type=range]::-webkit-slider-thumb {
   <!-- 長女 -->
   <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
     <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長女（13歳・中1）</div>
-    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 〜夫45歳 / 高校: 夫46〜48歳 / 大学: 夫49〜52歳</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 〜夫45歳 / 高校: 夫46〜48歳 / 卒業後: 夫49歳〜</div>
     <div style="font-size:12px;color:#444;margin-bottom:4px">高校</div>
     <div class="btn-group" id="hs_d">
       <button class="btn active" data-val="50" onclick="selBtn('hs_d',this)">公立 50万/年</button>
       <button class="btn" data-val="100" onclick="selBtn('hs_d',this)">私立 100万/年</button>
     </div>
-    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">大学</div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">高校卒業後の進路</div>
     <div class="btn-group" id="univ_d">
-      <button class="btn active" data-val="110" onclick="selBtn('univ_d',this)">国公立 110万/年</button>
-      <button class="btn" data-val="160" onclick="selBtn('univ_d',this)">私立 160万/年</button>
+      <button class="btn" data-val="0" data-years="0" onclick="selBtn('univ_d',this)">就職</button>
+      <button class="btn" data-val="70" data-years="2" onclick="selBtn('univ_d',this)">専門(公) 70万/年</button>
+      <button class="btn" data-val="120" data-years="2" onclick="selBtn('univ_d',this)">専門(私) 120万/年</button>
+      <button class="btn active" data-val="110" data-years="4" onclick="selBtn('univ_d',this)">国公立 110万/年</button>
+      <button class="btn" data-val="160" data-years="4" onclick="selBtn('univ_d',this)">私立 160万/年</button>
     </div>
     <div class="sl-label">一人暮らし補助（月）</div>
     <div class="sl-row">
@@ -331,7 +364,7 @@ input[type=range]::-webkit-slider-thumb {
   <!-- 長男 -->
   <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
     <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長男（10歳・小5）</div>
-    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫46〜48歳 / 高校: 夫49〜51歳 / 大学: 夫52〜55歳</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫46〜48歳 / 高校: 夫49〜51歳 / 卒業後: 夫52歳〜</div>
     <div style="font-size:12px;color:#444;margin-bottom:4px">中学</div>
     <div class="btn-group" id="jhs_s1">
       <button class="btn active" data-val="50" onclick="selBtn('jhs_s1',this)">公立 50万/年</button>
@@ -342,10 +375,13 @@ input[type=range]::-webkit-slider-thumb {
       <button class="btn active" data-val="50" onclick="selBtn('hs_s1',this)">公立 50万/年</button>
       <button class="btn" data-val="100" onclick="selBtn('hs_s1',this)">私立 100万/年</button>
     </div>
-    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">大学</div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">高校卒業後の進路</div>
     <div class="btn-group" id="univ_s1">
-      <button class="btn active" data-val="110" onclick="selBtn('univ_s1',this)">国公立 110万/年</button>
-      <button class="btn" data-val="160" onclick="selBtn('univ_s1',this)">私立 160万/年</button>
+      <button class="btn" data-val="0" data-years="0" onclick="selBtn('univ_s1',this)">就職</button>
+      <button class="btn" data-val="70" data-years="2" onclick="selBtn('univ_s1',this)">専門(公) 70万/年</button>
+      <button class="btn" data-val="120" data-years="2" onclick="selBtn('univ_s1',this)">専門(私) 120万/年</button>
+      <button class="btn active" data-val="110" data-years="4" onclick="selBtn('univ_s1',this)">国公立 110万/年</button>
+      <button class="btn" data-val="160" data-years="4" onclick="selBtn('univ_s1',this)">私立 160万/年</button>
     </div>
     <div class="sl-label">一人暮らし補助（月）</div>
     <div class="sl-row">
@@ -357,7 +393,7 @@ input[type=range]::-webkit-slider-thumb {
   <!-- 次男 -->
   <div>
     <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">次男（7歳・小1）</div>
-    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫49〜51歳 / 高校: 夫52〜54歳 / 大学: 夫55〜58歳</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫49〜51歳 / 高校: 夫52〜54歳 / 卒業後: 夫55歳〜</div>
     <div style="font-size:12px;color:#444;margin-bottom:4px">中学</div>
     <div class="btn-group" id="jhs_s2">
       <button class="btn active" data-val="50" onclick="selBtn('jhs_s2',this)">公立 50万/年</button>
@@ -368,10 +404,13 @@ input[type=range]::-webkit-slider-thumb {
       <button class="btn active" data-val="50" onclick="selBtn('hs_s2',this)">公立 50万/年</button>
       <button class="btn" data-val="100" onclick="selBtn('hs_s2',this)">私立 100万/年</button>
     </div>
-    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">大学</div>
+    <div style="font-size:12px;color:#444;margin-top:8px;margin-bottom:4px">高校卒業後の進路</div>
     <div class="btn-group" id="univ_s2">
-      <button class="btn active" data-val="110" onclick="selBtn('univ_s2',this)">国公立 110万/年</button>
-      <button class="btn" data-val="160" onclick="selBtn('univ_s2',this)">私立 160万/年</button>
+      <button class="btn" data-val="0" data-years="0" onclick="selBtn('univ_s2',this)">就職</button>
+      <button class="btn" data-val="70" data-years="2" onclick="selBtn('univ_s2',this)">専門(公) 70万/年</button>
+      <button class="btn" data-val="120" data-years="2" onclick="selBtn('univ_s2',this)">専門(私) 120万/年</button>
+      <button class="btn active" data-val="110" data-years="4" onclick="selBtn('univ_s2',this)">国公立 110万/年</button>
+      <button class="btn" data-val="160" data-years="4" onclick="selBtn('univ_s2',this)">私立 160万/年</button>
     </div>
     <div class="sl-label">一人暮らし補助（月）</div>
     <div class="sl-row">
@@ -383,8 +422,8 @@ input[type=range]::-webkit-slider-thumb {
 
 <!-- 凡例 -->
 <div style="font-size:11px;font-weight:600;color:#888;margin-bottom:6px;display:flex;gap:16px">
-  <span>灰色: 現状</span>
-  <span style="color:#0d9488">緑: 見直し後</span>
+  <span>灰色: 現状（保険継続）</span>
+  <span style="color:#0d9488">緑: 保険解約→株式投資後</span>
 </div>
 
 <!-- 年齢カード -->
@@ -392,16 +431,16 @@ input[type=range]::-webkit-slider-thumb {
 
 <!-- グラフ1: 資産推移 -->
 <div class="chart-wrap">
-  <div class="chart-title">資産推移（現状 vs 見直し後）</div>
+  <div class="chart-title">資産推移（現状 vs 保険解約→投資後）</div>
   <canvas id="chartAssets" height="260"></canvas>
-  <p class="note">※ 現金が不足した場合は投資信託を自動取り崩し。株式は変動なし（保有額固定）。</p>
+  <p class="note">※ 現金が不足した場合は投資信託を自動取り崩し。解約返戻金は初年度に一括加算。</p>
 </div>
 
 <!-- グラフ2: 教育費 -->
 <div class="chart-wrap">
   <div class="chart-title">子供の教育費（年間）</div>
   <canvas id="chartEdu" height="200"></canvas>
-  <p class="note">※ 3人の教育費合計。大学は一人暮らし補助含む。</p>
+  <p class="note">※ 3人の教育費合計。一人暮らし補助含む。</p>
 </div>
 
 <!-- グラフ3: 収支 -->
@@ -414,12 +453,63 @@ input[type=range]::-webkit-slider-thumb {
 <script>
 const START_H = 44, WIFE_START = 46, END_AGE = 75;
 const YEARS = END_AGE - START_H + 1;
-const KIDS0 = [13, 10, 7]; // 長女・長男・次男の現在年齢
 
 let c1=null, c2=null, c3=null;
 
+// ===== 保険10件の生成 =====
+const INS_COUNT = 10;
+(function buildInsList() {
+  const container = document.getElementById('insList');
+  for (let i = 1; i <= INS_COUNT; i++) {
+    const row = document.createElement('div');
+    row.className = 'ins-row';
+    row.innerHTML = `
+      <div class="ins-num">⑤`.replace('⑤', '保険' + i) + `</div>
+      <input type="number" class="ins-input ins-m" id="insM${i}" placeholder="0" min="0" max="50" step="0.1" value="0" oninput="updateInsInfo()">
+      <input type="number" class="ins-input ins-lump" id="insL${i}" placeholder="0" min="0" max="1000" step="10" value="0" oninput="updateInsInfo()">
+      <button class="ins-cancel-btn" id="insC${i}" onclick="toggleCancel(${i})">残す</button>
+    `;
+    // fix the label
+    row.querySelector('.ins-num').textContent = '保険' + i;
+    container.appendChild(row);
+  }
+})();
+
+function toggleCancel(i) {
+  const btn = document.getElementById('insC' + i);
+  btn.classList.toggle('active');
+  btn.textContent = btn.classList.contains('active') ? '解約' : '残す';
+  updateInsInfo();
+  simulate();
+}
+
+function getInsuranceData() {
+  let totalM = 0, cancelM = 0, lumpSum = 0;
+  for (let i = 1; i <= INS_COUNT; i++) {
+    const m    = parseFloat(document.getElementById('insM' + i).value) || 0;
+    const lump = parseFloat(document.getElementById('insL' + i).value) || 0;
+    const cancelled = document.getElementById('insC' + i).classList.contains('active');
+    totalM += m;
+    if (cancelled) { cancelM += m; lumpSum += lump; }
+  }
+  return { totalM, cancelM, lumpSum };
+}
+
+function updateInsInfo() {
+  const ins = getInsuranceData();
+  document.getElementById('insTotalDisp').textContent  = ins.totalM.toFixed(1);
+  document.getElementById('insCancelMDisp').textContent = ins.cancelM.toFixed(1);
+  document.getElementById('insLumpDisp').textContent    = ins.lumpSum.toLocaleString();
+  const base = parseFloat(document.getElementById('trustM').value) || 0;
+  const add  = parseFloat(document.getElementById('insToTrust').value) || 0;
+  document.getElementById('newTrustM').textContent = (base + add).toFixed(1) + '万円';
+  simulate();
+}
+
+// ===== 共通ヘルパー =====
 function v(id){ return parseFloat(document.getElementById(id).value); }
 function getBtn(gid){ return parseFloat(document.querySelector(`#${gid} .btn.active`).dataset.val); }
+function getBtnYears(gid){ return parseInt(document.querySelector(`#${gid} .btn.active`).dataset.years ?? '4'); }
 
 function fmtVal(val) {
   if (Number.isInteger(val)) return val.toLocaleString();
@@ -429,7 +519,7 @@ function fmtVal(val) {
 function sl(id, vid, unit) {
   const val = v(id);
   document.getElementById(vid).textContent = fmtVal(val) + unit;
-  updateReviewInfo();
+  updateInsInfo();
   simulate();
 }
 function selBtn(gid, el) {
@@ -450,10 +540,13 @@ function annualPmt(principal, annualRatePct, years) {
 
 function updateLoans() {
   const defs = [
-    { pId:'mortP', yId:'mortY', rId:'mortR', pVid:'mortPVal', yVid:'mortYVal', rVid:'mortRVal', chipId:'mortChip', label:'月返済' },
-    { pId:'carP',  yId:'carY',  rId:'carR',  pVid:'carPVal',  yVid:'carYVal',  rVid:'carRVal',  chipId:'carChip',  label:'月返済' },
-    { pId:'l1P',   yId:'l1Y',   rId:'l1R',   pVid:'l1PVal',   yVid:'l1YVal',   rVid:'l1RVal',   chipId:'l1Chip',   label:'月返済' },
-    { pId:'l2P',   yId:'l2Y',   rId:'l2R',   pVid:'l2PVal',   yVid:'l2YVal',   rVid:'l2RVal',   chipId:'l2Chip',   label:'月返済' },
+    { pId:'mortP',  yId:'mortY',  rId:'mortR',  pVid:'mortPVal',  yVid:'mortYVal',  rVid:'mortRVal',  chipId:'mortChip'  },
+    { pId:'mort2P', yId:'mort2Y', rId:'mort2R', pVid:'mort2PVal', yVid:'mort2YVal', rVid:'mort2RVal', chipId:'mort2Chip' },
+    { pId:'carP',   yId:'carY',   rId:'carR',   pVid:'carPVal',   yVid:'carYVal',   rVid:'carRVal',   chipId:'carChip'   },
+    { pId:'car2P',  yId:'car2Y',  rId:'car2R',  pVid:'car2PVal',  yVid:'car2YVal',  rVid:'car2RVal',  chipId:'car2Chip'  },
+    { pId:'l1P',    yId:'l1Y',    rId:'l1R',    pVid:'l1PVal',    yVid:'l1YVal',    rVid:'l1RVal',    chipId:'l1Chip'    },
+    { pId:'l2P',    yId:'l2Y',    rId:'l2R',    pVid:'l2PVal',    yVid:'l2YVal',    rVid:'l2RVal',    chipId:'l2Chip'    },
+    { pId:'l3P',    yId:'l3Y',    rId:'l3R',    pVid:'l3PVal',    yVid:'l3YVal',    rVid:'l3RVal',    chipId:'l3Chip'    },
   ];
   for (const d of defs) {
     const p = v(d.pId), yr = v(d.yId), r = v(d.rId);
@@ -464,51 +557,53 @@ function updateLoans() {
       document.getElementById(d.chipId).textContent = '借入なし';
     } else {
       const m = annualPmt(p, r, yr) / 12;
-      document.getElementById(d.chipId).textContent = d.label + ': ' + (Math.round(m * 10) / 10) + '万円';
+      document.getElementById(d.chipId).textContent = '月返済: ' + (Math.round(m * 10) / 10) + '万円';
     }
   }
   simulate();
 }
 
-function updateReviewInfo() {
-  const base = v('trustM');
-  const add  = v('insToTrust');
-  const cancel = v('insCancel');
-  document.getElementById('newTrustM').textContent = (base + add) + '万円';
-  document.getElementById('annualSaving').textContent = (cancel * 12).toLocaleString() + '万円';
-}
-
-function eduCostChild(k0, y, jhs, hs, univ, dormM) {
+function eduCostChild(k0, y, jhs, hs, univCost, univYears, dormM) {
   const age = k0 + y;
   let cost = 0;
   if (age >= 12 && age <= 14) cost += jhs;
   if (age >= 15 && age <= 17) cost += hs;
-  if (age >= 18 && age <= 21) cost += univ + dormM * 12;
+  if (univYears > 0 && age >= 18 && age < 18 + univYears) cost += univCost + dormM * 12;
   return cost;
 }
 
 function simulate() {
-  const rate      = getBtn('rateGroup') / 100;
-  const hRetire   = getBtn('husbRetire');
-  const wRetire   = getBtn('wifeRetire');
-  // per-child education settings
-  const hs_d    = getBtn('hs_d');    const univ_d  = getBtn('univ_d');  const dorm_d  = v('dorm_d');
-  const jhs_s1  = getBtn('jhs_s1'); const hs_s1   = getBtn('hs_s1');   const univ_s1 = getBtn('univ_s1'); const dorm_s1 = v('dorm_s1');
-  const jhs_s2  = getBtn('jhs_s2'); const hs_s2   = getBtn('hs_s2');   const univ_s2 = getBtn('univ_s2'); const dorm_s2 = v('dorm_s2');
-  const insMBase  = v('insM');
-  const insCancelM= v('insCancel');
+  const rate    = getBtn('rateGroup') / 100;
+  const hRetire = getBtn('husbRetire');
+  const wRetire = getBtn('wifeRetire');
+
+  // 教育費（per child）
+  const hs_d   = getBtn('hs_d');
+  const univ_d = getBtn('univ_d'),  univY_d  = getBtnYears('univ_d'),  dorm_d  = v('dorm_d');
+  const jhs_s1 = getBtn('jhs_s1'), hs_s1    = getBtn('hs_s1');
+  const univ_s1= getBtn('univ_s1'), univY_s1 = getBtnYears('univ_s1'), dorm_s1 = v('dorm_s1');
+  const jhs_s2 = getBtn('jhs_s2'), hs_s2    = getBtn('hs_s2');
+  const univ_s2= getBtn('univ_s2'), univY_s2 = getBtnYears('univ_s2'), dorm_s2 = v('dorm_s2');
+
   const insTrustM = v('insToTrust');
   const trustMB   = v('trustM');
 
+  // 保険データ
+  const ins = getInsuranceData();
+
   const loans = [
-    { p: v('mortP'), r: v('mortR'), y: v('mortY') },
-    { p: v('carP'),  r: v('carR'),  y: v('carY')  },
-    { p: v('l1P'),   r: v('l1R'),   y: v('l1Y')   },
-    { p: v('l2P'),   r: v('l2R'),   y: v('l2Y')   },
+    { p: v('mortP'),  r: v('mortR'),  y: v('mortY')  },
+    { p: v('mort2P'), r: v('mort2R'), y: v('mort2Y') },
+    { p: v('carP'),   r: v('carR'),   y: v('carY')   },
+    { p: v('car2P'),  r: v('car2R'),  y: v('car2Y')  },
+    { p: v('l1P'),    r: v('l1R'),    y: v('l1Y')    },
+    { p: v('l2P'),    r: v('l2R'),    y: v('l2Y')    },
+    { p: v('l3P'),    r: v('l3R'),    y: v('l3Y')    },
   ];
 
   let cashB = v('cash0'), trustB = v('trust0');
-  let cashA = cashB,      trustA = trustB;
+  // 見直し後: 初年度に解約返戻金を現金に加算
+  let cashA = cashB + ins.lumpSum, trustA = trustB;
 
   const ages=[], totB=[], totA=[], eduArr=[], incArr=[], expArr=[];
 
@@ -520,7 +615,7 @@ function simulate() {
     totB.push(Math.round(cashB + trustB));
     totA.push(Math.round(cashA + trustA));
 
-    // Income
+    // 収入
     let inc = 0;
     if (ha < hRetire) inc += v('husbSalary') * 12;
     if (wa < wRetire) inc += v('wifeSalary') * 12;
@@ -528,48 +623,46 @@ function simulate() {
     if (wa >= 65) inc += v('wifePension') * 12;
     incArr.push(Math.round(inc));
 
-    // Loans (active within term)
+    // ローン返済
     let loanAnn = 0;
     for (const l of loans) {
       if (l.p > 0 && y < l.y) loanAnn += annualPmt(l.p, l.r, l.y);
     }
 
-    // Education (per child)
-    const edu = eduCostChild(13, y, 50, hs_d, univ_d, dorm_d)
-              + eduCostChild(10, y, jhs_s1, hs_s1, univ_s1, dorm_s1)
-              + eduCostChild(7,  y, jhs_s2, hs_s2, univ_s2, dorm_s2);
+    // 教育費
+    const edu = eduCostChild(13, y, 50,     hs_d,  univ_d,  univY_d,  dorm_d)
+              + eduCostChild(10, y, jhs_s1, hs_s1, univ_s1, univY_s1, dorm_s1)
+              + eduCostChild(7,  y, jhs_s2, hs_s2, univ_s2, univY_s2, dorm_s2);
     eduArr.push(Math.round(edu));
 
-    // Living
     const living = v('livingM') * 12;
 
-    // Insurance costs
-    const insAnnB = insMBase * 12;
-    const insAnnA = (insMBase - insCancelM) * 12;
+    // 保険料
+    const insAnnB = ins.totalM * 12;
+    const insAnnA = (ins.totalM - ins.cancelM) * 12;
 
-    // Trust contributions
+    // 積立
     const tcB = trustMB * 12;
     const tcA = (trustMB + insTrustM) * 12;
 
-    // Total exp (excluding trust contribution)
     const eB = living + loanAnn + insAnnB + edu;
     const eA = living + loanAnn + insAnnA + edu;
     expArr.push(Math.round(eB));
 
-    // BEFORE
+    // 現状
     trustB *= (1 + rate);
     trustB += tcB;
     cashB  += inc - eB - tcB;
     if (cashB < 0 && trustB > 0) { const d = Math.min(-cashB, trustB); trustB -= d; cashB += d; }
 
-    // AFTER
+    // 見直し後
     trustA *= (1 + rate);
     trustA += tcA;
     cashA  += inc - eA - tcA;
     if (cashA < 0 && trustA > 0) { const d = Math.min(-cashA, trustA); trustA -= d; cashA += d; }
   }
 
-  // === AGE CARDS ===
+  // 年齢カード
   const cardEl = document.getElementById('ageCards');
   cardEl.innerHTML = '';
   [50,55,60,65,75].forEach(age => {
@@ -588,19 +681,18 @@ function simulate() {
     cardEl.appendChild(d);
   });
 
-  // step=2 for chart labels
   const fi = ages.map((_,i)=>i).filter(i=>i%2===0);
   const labels = fi.map(i=>ages[i]+'歳');
 
-  // === CHART 1 ===
+  // チャート1: 資産推移
   if (c1) c1.destroy();
   c1 = new Chart(document.getElementById('chartAssets'), {
     type:'line',
     data:{
       labels,
       datasets:[
-        {label:'現状',      data:fi.map(i=>totB[i]), borderColor:'#94a3b8', borderWidth:2, pointRadius:0, tension:0.3},
-        {label:'見直し後',  data:fi.map(i=>totA[i]), borderColor:'#0d9488', borderWidth:3, pointRadius:0, tension:0.3},
+        {label:'現状（保険継続）', data:fi.map(i=>totB[i]), borderColor:'#94a3b8', borderWidth:2, pointRadius:0, tension:0.3},
+        {label:'保険解約→投資後',  data:fi.map(i=>totA[i]), borderColor:'#0d9488', borderWidth:3, pointRadius:0, tension:0.3},
       ]
     },
     options:{
@@ -617,7 +709,7 @@ function simulate() {
     }
   });
 
-  // === CHART 2: 教育費 ===
+  // チャート2: 教育費
   if (c2) c2.destroy();
   c2 = new Chart(document.getElementById('chartEdu'), {
     type:'bar',
@@ -632,7 +724,7 @@ function simulate() {
     }
   });
 
-  // === CHART 3: 収支 ===
+  // チャート3: 収支
   if (c3) c3.destroy();
   c3 = new Chart(document.getElementById('chartCF'), {
     type:'bar',
@@ -652,7 +744,7 @@ function simulate() {
 }
 
 updateLoans();
-updateReviewInfo();
+updateInsInfo();
 simulate();
 </script>
 </body>
