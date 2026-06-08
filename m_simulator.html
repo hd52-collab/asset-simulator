@@ -94,11 +94,11 @@ input[type=range]::-webkit-slider-thumb {
 <p class="subtitle">現状 vs 保険見直し後の資産推移比較</p>
 
 <div class="fam-bar">
-  <div class="fam-item"><span class="fam-name">夫 43歳</span><span class="fam-desc">〜75歳</span></div>
-  <div class="fam-item"><span class="fam-name">妻 45歳</span><span class="fam-desc">〜77歳</span></div>
-  <div class="fam-item"><span class="fam-name">長女 12歳</span><span class="fam-desc">中1</span></div>
-  <div class="fam-item"><span class="fam-name">長男 8歳</span><span class="fam-desc">小3</span></div>
-  <div class="fam-item"><span class="fam-name">次男 6歳</span><span class="fam-desc">小1</span></div>
+  <div class="fam-item"><span class="fam-name">夫 44歳</span><span class="fam-desc">〜75歳</span></div>
+  <div class="fam-item"><span class="fam-name">妻 46歳</span><span class="fam-desc">〜77歳</span></div>
+  <div class="fam-item"><span class="fam-name">長女 13歳</span><span class="fam-desc">中1</span></div>
+  <div class="fam-item"><span class="fam-name">長男 10歳</span><span class="fam-desc">小5</span></div>
+  <div class="fam-item"><span class="fam-name">次男 7歳</span><span class="fam-desc">小1</span></div>
 </div>
 
 <!-- 現在の資産 -->
@@ -309,7 +309,7 @@ input[type=range]::-webkit-slider-thumb {
 
   <!-- 長女 -->
   <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
-    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長女（12歳・中1）</div>
+    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長女（13歳・中1）</div>
     <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 〜夫45歳 / 高校: 夫46〜48歳 / 大学: 夫49〜52歳</div>
     <div style="font-size:12px;color:#444;margin-bottom:4px">高校</div>
     <div class="btn-group" id="hs_d">
@@ -330,8 +330,8 @@ input[type=range]::-webkit-slider-thumb {
 
   <!-- 長男 -->
   <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0">
-    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長男（8歳・小3）</div>
-    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫47〜49歳 / 高校: 夫50〜52歳 / 大学: 夫53〜56歳</div>
+    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">長男（10歳・小5）</div>
+    <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫46〜48歳 / 高校: 夫49〜51歳 / 大学: 夫52〜55歳</div>
     <div style="font-size:12px;color:#444;margin-bottom:4px">中学</div>
     <div class="btn-group" id="jhs_s1">
       <button class="btn active" data-val="50" onclick="selBtn('jhs_s1',this)">公立 50万/年</button>
@@ -356,7 +356,7 @@ input[type=range]::-webkit-slider-thumb {
 
   <!-- 次男 -->
   <div>
-    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">次男（6歳・小1）</div>
+    <div style="font-size:13px;font-weight:700;color:#134e4a;margin-bottom:8px">次男（7歳・小1）</div>
     <div style="font-size:11px;color:#888;margin-bottom:6px">中学: 夫49〜51歳 / 高校: 夫52〜54歳 / 大学: 夫55〜58歳</div>
     <div style="font-size:12px;color:#444;margin-bottom:4px">中学</div>
     <div class="btn-group" id="jhs_s2">
@@ -412,9 +412,9 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 <script>
-const START_H = 43, WIFE_START = 45, END_AGE = 75;
+const START_H = 44, WIFE_START = 46, END_AGE = 75;
 const YEARS = END_AGE - START_H + 1;
-const KIDS0 = [12, 8, 6]; // 長女・長男・次男の現在年齢
+const KIDS0 = [13, 10, 7]; // 長女・長男・次男の現在年齢
 
 let c1=null, c2=null, c3=null;
 
@@ -535,9 +535,9 @@ function simulate() {
     }
 
     // Education (per child)
-    const edu = eduCostChild(12, y, 50, hs_d, univ_d, dorm_d)
-              + eduCostChild(8,  y, jhs_s1, hs_s1, univ_s1, dorm_s1)
-              + eduCostChild(6,  y, jhs_s2, hs_s2, univ_s2, dorm_s2);
+    const edu = eduCostChild(13, y, 50, hs_d, univ_d, dorm_d)
+              + eduCostChild(10, y, jhs_s1, hs_s1, univ_s1, dorm_s1)
+              + eduCostChild(7,  y, jhs_s2, hs_s2, univ_s2, dorm_s2);
     eduArr.push(Math.round(edu));
 
     // Living
