@@ -34,6 +34,11 @@ h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
   text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
 }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 480px) {
+  .grid2 { grid-template-columns: 1fr; }
+  .sl-val { min-width: 70px; }
+  .btn { padding: 7px 11px; font-size: 12px; }
+}
 
 .sl-label { font-size: 12px; color: #444; margin-top: 8px; margin-bottom: 2px; }
 .sl-label:first-child { margin-top: 0; }
