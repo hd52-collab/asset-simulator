@@ -67,7 +67,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 /* age cards */
-.age-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.age-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
 .acard {
   background: #fff; border-radius: 12px; padding: 10px 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center;
@@ -88,11 +88,11 @@ input[type=range]::-webkit-slider-thumb {
 
 <a href="index.html" class="back">← トップへ</a>
 <h1>48歳家族 資産シミュレーター</h1>
-<p class="subtitle">夫100歳までの資産推移を試算します</p>
+<p class="subtitle">夫80歳までの資産推移を試算します</p>
 
 <!-- 家族情報 -->
 <div class="fam-bar">
-  <div class="fam-item"><span class="fam-name">夫 48歳</span><span class="fam-desc">現在〜100歳</span></div>
+  <div class="fam-item"><span class="fam-name">夫 48歳</span><span class="fam-desc">現在〜80歳</span></div>
   <div class="fam-item"><span class="fam-name">妻 45歳</span><span class="fam-desc">現在〜97歳</span></div>
   <div class="fam-item"><span class="fam-name">長女 18歳</span><span class="fam-desc">大学2年（残2年）</span></div>
   <div class="fam-item"><span class="fam-name">長男 15歳</span><span class="fam-desc">高校2年→大学4年</span></div>
@@ -279,7 +279,7 @@ input[type=range]::-webkit-slider-thumb {
 
 <script>
 const START_AGE = 48;
-const END_AGE = 100;
+const END_AGE = 80;
 const YEARS = END_AGE - START_AGE + 1;
 const MORTGAGE_ANNUAL = 72; // 6万×12
 const MORTGAGE_REMAINING = 15; // 残15年
@@ -329,13 +329,24 @@ function simulate() {
     cashArr.push(Math.round(cash));
     totalArr.push(Math.round(trust + stock + cash));
 
+    // === 固定費 子供卒業ごとに20%減 ===
+    // 長女卒業: 夫50歳(y=2)以降, 長男卒業: 夫55歳(y=7)以降
+    let fixedMult = 1.0;
+    if (y >= 2) fixedMult *= 0.8; // 長女大学卒業後
+    if (y >= 7) fixedMult *= 0.8; // 長男大学卒業後
+
+    // 60歳以降の収支調整
+    const age60 = husbAge >= 60;
+    const salaryMult = age60 ? 0.80 : 1.0;   // 給与20%減
+    const expMult    = age60 ? 0.85 : 1.0;   // 生活支出15%減
+
     // === INCOME ===
     let income = 0;
 
-    // Salary (husband)
-    if (husbAge < husbRetireAge) income += v('husbSalary') * 12;
-    // Salary (wife) - wife is 3 years younger
-    if (wifeAge < wifeRetireAge) income += v('wifeSalary') * 12;
+    // Salary (husband) — 60歳以降は20%減
+    if (husbAge < husbRetireAge) income += v('husbSalary') * 12 * salaryMult;
+    // Salary (wife) — 60歳以降は20%減
+    if (wifeAge < wifeRetireAge) income += v('wifeSalary') * 12 * salaryMult;
     // Rental (first 5 years only)
     if (y < 5) income += v('rental') * 12;
     // Pension (husband from 65)
@@ -349,10 +360,16 @@ function simulate() {
     incomeArr.push(Math.round(income));
 
     // === EXPENSES ===
-    let exp = 0;
-    exp += (v('fixedM') + v('varM')) * 12;
-    exp += v('specialY');
-    exp += v('carY');
+    // 生活費部分（固定費・変動費・特別費・車）は年齢と子供卒業で調整
+    let livingExp = 0;
+    livingExp += v('fixedM') * fixedMult * 12; // 固定費: 子供卒業後20%減×段階
+    livingExp += v('varM') * 12;
+    livingExp += v('specialY');
+    livingExp += v('carY');
+    livingExp *= expMult; // 60歳以降15%減
+
+    let exp = livingExp;
+    // 固定義務（住宅ローン・教育費）は調整なし
     // Mortgage (残15年: y=0〜14)
     if (y < MORTGAGE_REMAINING) exp += MORTGAGE_ANNUAL;
     // Education: 長女大学 (y=0,1)
@@ -377,7 +394,7 @@ function simulate() {
   }
 
   // === AGE CARDS ===
-  const cardAges = [55, 60, 65, 70, 80, 100];
+  const cardAges = [55, 60, 65, 70, 80];
   const cardsEl = document.getElementById('ageCards');
   cardsEl.innerHTML = '';
   cardAges.forEach(age => {
@@ -388,7 +405,7 @@ function simulate() {
     const networth = total + housing + PROPERTY;
     const d = document.createElement('div');
     d.className = 'acard';
-    const tag = age === 100
+    const tag = age === 80
       ? (total >= 0 ? '<div class="tag-ok">資産あり</div>' : '<div class="tag-ng">資産枯渇</div>')
       : '';
     d.innerHTML = `<div class="acard-age">夫${age}歳</div>
