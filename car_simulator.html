@@ -34,9 +34,14 @@
   /* 2-column car settings */
   .car-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 12px;
     margin-bottom: 14px;
+  }
+  @media (min-width: 520px) {
+    .car-grid { grid-template-columns: 1fr 1fr; }
+    .result-grid { grid-template-columns: 1fr 1fr; }
+    .diff-grid { grid-template-columns: 1fr 1fr; }
   }
   .car-col {
     background: #fff;
@@ -76,7 +81,7 @@
   /* result cards */
   .result-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 10px;
     margin-bottom: 14px;
   }
@@ -94,7 +99,7 @@
 
   .diff-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 10px;
     margin-bottom: 14px;
   }
