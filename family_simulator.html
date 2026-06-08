@@ -16,7 +16,6 @@ a.back { font-size: 13px; color: #1a6fb5; text-decoration: none; display: inline
 h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
 .subtitle { font-size: 12px; color: #888; margin-bottom: 16px; }
 
-/* family info bar */
 .fam-bar {
   background: #1a1a2e; color: #fff; border-radius: 12px;
   padding: 10px 14px; margin-bottom: 14px;
@@ -50,7 +49,6 @@ input[type=range]::-webkit-slider-thumb {
 }
 .sl-val { font-size: 12px; font-weight: 700; color: #1a6fb5; min-width: 60px; text-align: right; }
 
-/* btn group */
 .btn-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .btn {
   padding: 7px 14px; border: 2px solid #1a6fb5; border-radius: 8px;
@@ -59,14 +57,12 @@ input[type=range]::-webkit-slider-thumb {
 }
 .btn.active { background: #1a6fb5; color: #fff; }
 
-/* info chip */
 .chip {
   display: inline-block; background: #f0f4ff; color: #1a6fb5;
   border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600;
   margin-top: 6px;
 }
 
-/* age cards */
 .age-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
 .acard {
   background: #fff; border-radius: 12px; padding: 10px 8px;
@@ -90,10 +86,9 @@ input[type=range]::-webkit-slider-thumb {
 <h1>48歳家族 資産シミュレーター</h1>
 <p class="subtitle">夫80歳までの資産推移を試算します</p>
 
-<!-- 家族情報 -->
 <div class="fam-bar">
   <div class="fam-item"><span class="fam-name">夫 48歳</span><span class="fam-desc">現在〜80歳</span></div>
-  <div class="fam-item"><span class="fam-name">妻 45歳</span><span class="fam-desc">現在〜97歳</span></div>
+  <div class="fam-item"><span class="fam-name">妻 45歳</span><span class="fam-desc">現在〜77歳</span></div>
   <div class="fam-item"><span class="fam-name">長女 18歳</span><span class="fam-desc">大学2年（残2年）</span></div>
   <div class="fam-item"><span class="fam-name">長男 15歳</span><span class="fam-desc">高校2年→大学4年</span></div>
 </div>
@@ -182,11 +177,6 @@ input[type=range]::-webkit-slider-thumb {
       </div>
     </div>
   </div>
-  <div class="sl-label" style="margin-top:10px">家賃収入（月・最初の5年間）</div>
-  <div class="sl-row">
-    <input type="range" id="rental" min="0" max="30" step="1" value="10" oninput="sl('rental','rentalVal','万円/月')">
-    <div class="sl-val" id="rentalVal">10万円/月</div>
-  </div>
 </div>
 
 <!-- 支出設定 -->
@@ -223,6 +213,57 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 </div>
 
+<!-- 車購入 -->
+<div class="section">
+  <div class="section-title">車購入</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">1台あたりの車体価格</div>
+      <div class="sl-row">
+        <input type="range" id="carPrice" min="0" max="300" step="10" value="60" oninput="sl('carPrice','carPriceVal','万円')">
+        <div class="sl-val" id="carPriceVal">60万円</div>
+      </div>
+      <div class="sl-label">台数</div>
+      <div class="btn-group" id="carCount" style="margin-top:4px">
+        <button class="btn" data-val="1" onclick="selBtn('carCount',this)">1台</button>
+        <button class="btn active" data-val="2" onclick="selBtn('carCount',this)">2台</button>
+      </div>
+    </div>
+    <div>
+      <div class="sl-label">購入間隔</div>
+      <div class="btn-group" id="carInterval" style="margin-top:4px">
+        <button class="btn" data-val="5" onclick="selBtn('carInterval',this)">5年</button>
+        <button class="btn active" data-val="7" onclick="selBtn('carInterval',this)">7年</button>
+        <button class="btn" data-val="10" onclick="selBtn('carInterval',this)">10年</button>
+      </div>
+      <div style="font-size:10px;color:#aaa;margin-top:8px" id="carBuyNote"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 大規模修繕 -->
+<div class="section">
+  <div class="section-title">大規模修繕</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">1回あたりの費用</div>
+      <div class="sl-row">
+        <input type="range" id="renovCost" min="0" max="500" step="50" value="200" oninput="sl('renovCost','renovCostVal','万円')">
+        <div class="sl-val" id="renovCostVal">200万円</div>
+      </div>
+    </div>
+    <div>
+      <div class="sl-label">実施年齢（複数選択可）</div>
+      <div class="btn-group" style="margin-top:4px">
+        <button class="btn" data-val="55" onclick="toggleRenov(this)">55歳</button>
+        <button class="btn active" data-val="65" onclick="toggleRenov(this)">65歳</button>
+        <button class="btn" data-val="70" onclick="toggleRenov(this)">70歳</button>
+        <button class="btn" data-val="75" onclick="toggleRenov(this)">75歳</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 教育費 -->
 <div class="section">
   <div class="section-title">教育費</div>
@@ -246,21 +287,6 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 </div>
 
-<!-- 不動産 -->
-<div class="section">
-  <div class="section-title">不動産（参考・非売却前提）</div>
-  <div class="grid2">
-    <div>
-      <div class="sl-label">自宅価値（現在）</div>
-      <div class="chip">1,500万円 → 毎年100万↓ → 下限500万</div>
-    </div>
-    <div>
-      <div class="sl-label">不動産物件</div>
-      <div class="chip">1,000万円（価値固定）</div>
-    </div>
-  </div>
-</div>
-
 <!-- 年齢別カード -->
 <div class="age-cards" id="ageCards"></div>
 
@@ -275,6 +301,7 @@ input[type=range]::-webkit-slider-thumb {
 <div class="chart-wrap">
   <div class="chart-title">年間収支（収入 vs 支出）</div>
   <canvas id="chartCashflow" height="220"></canvas>
+  <p class="note">※ 車購入・大規模修繕は実施年に一括計上。</p>
 </div>
 
 <script>
@@ -282,12 +309,8 @@ const START_AGE = 48;
 const END_AGE = 80;
 const YEARS = END_AGE - START_AGE + 1;
 const MORTGAGE_ANNUAL = 72; // 6万×12
-const MORTGAGE_REMAINING = 15; // 残15年
+const MORTGAGE_REMAINING = 15;
 const DIVIDEND_RATE = 0.035;
-const HOUSING_START = 1500;
-const HOUSING_MIN = 500;
-const HOUSING_ANNUAL_DROP = 100;
-const PROPERTY = 1000;
 
 let chartAssets = null;
 let chartCF = null;
@@ -305,11 +328,22 @@ function selBtn(groupId, el) {
   el.classList.add('active');
   simulate();
 }
+function toggleRenov(el) {
+  el.classList.toggle('active');
+  simulate();
+}
+function getRenovAges() {
+  return Array.from(document.querySelectorAll('[onclick="toggleRenov(this)"].active'))
+    .map(b => parseInt(b.dataset.val));
+}
 
 function simulate() {
   const trustRate = getBtn('rateGroup') / 100;
   const husbRetireAge = getBtn('husbRetire');
   const wifeRetireAge = getBtn('wifeRetire');
+  const carInterval = getBtn('carInterval');
+  const carCount = getBtn('carCount');
+  const renovAges = getRenovAges();
 
   let cash = v('cash0');
   let trust = v('trust0');
@@ -318,75 +352,72 @@ function simulate() {
   const ages = [], trustArr = [], stockArr = [], cashArr = [], totalArr = [];
   const incomeArr = [], expenseArr = [];
 
+  // 車購入タイミング: y=0, interval, interval*2, ...
+  const carBuyYears = new Set();
+  for (let y = 0; y < YEARS; y += carInterval) carBuyYears.add(y);
+  // 購入年をnoteに表示
+  const buyAges = [...carBuyYears].map(y => START_AGE + y).filter(a => a <= END_AGE);
+  const noteEl = document.getElementById('carBuyNote');
+  if (noteEl) noteEl.textContent = '購入年齢: 夫' + buyAges.join('・') + '歳';
+
   for (let y = 0; y < YEARS; y++) {
     const husbAge = START_AGE + y;
     const wifeAge = 45 + y;
 
-    // Record start of year
     ages.push(husbAge);
     trustArr.push(Math.round(trust));
     stockArr.push(Math.round(stock));
     cashArr.push(Math.round(cash));
     totalArr.push(Math.round(trust + stock + cash));
 
-    // === 固定費 子供卒業ごとに20%減 ===
-    // 長女卒業: 夫50歳(y=2)以降, 長男卒業: 夫55歳(y=7)以降
+    // 固定費 子供卒業ごとに20%減
     let fixedMult = 1.0;
-    if (y >= 2) fixedMult *= 0.8; // 長女大学卒業後
-    if (y >= 7) fixedMult *= 0.8; // 長男大学卒業後
+    if (y >= 2) fixedMult *= 0.8; // 長女卒業後
+    if (y >= 7) fixedMult *= 0.8; // 長男卒業後
 
-    // 60歳以降の収支調整
+    // 60歳以降の調整
     const age60 = husbAge >= 60;
-    const salaryMult = age60 ? 0.80 : 1.0;   // 給与20%減
-    const expMult    = age60 ? 0.85 : 1.0;   // 生活支出15%減
+    const salaryMult = age60 ? 0.80 : 1.0;
+    const expMult    = age60 ? 0.85 : 1.0;
 
     // === INCOME ===
     let income = 0;
-
-    // Salary (husband) — 60歳以降は20%減
     if (husbAge < husbRetireAge) income += v('husbSalary') * 12 * salaryMult;
-    // Salary (wife) — 60歳以降は20%減
     if (wifeAge < wifeRetireAge) income += v('wifeSalary') * 12 * salaryMult;
-    // Rental (first 5 years only)
-    if (y < 5) income += v('rental') * 12;
-    // Pension (husband from 65)
     if (husbAge >= 65) income += v('husbPension') * 12;
-    // Pension (wife from 65 = husband age 68)
     if (wifeAge >= 65) income += v('wifePension') * 12;
-    // Dividends
     const div = stock * DIVIDEND_RATE;
     income += div;
-
     incomeArr.push(Math.round(income));
 
     // === EXPENSES ===
-    // 生活費部分（固定費・変動費・特別費・車）は年齢と子供卒業で調整
     let livingExp = 0;
-    livingExp += v('fixedM') * fixedMult * 12; // 固定費: 子供卒業後20%減×段階
+    livingExp += v('fixedM') * fixedMult * 12;
     livingExp += v('varM') * 12;
     livingExp += v('specialY');
     livingExp += v('carY');
-    livingExp *= expMult; // 60歳以降15%減
+    livingExp *= expMult;
 
     let exp = livingExp;
-    // 固定義務（住宅ローン・教育費）は調整なし
-    // Mortgage (残15年: y=0〜14)
+
+    // 固定義務（調整なし）
     if (y < MORTGAGE_REMAINING) exp += MORTGAGE_ANNUAL;
-    // Education: 長女大学 (y=0,1)
     if (y === 0 || y === 1) exp += v('dauEdu');
-    // Education: 長男大学 (y=3〜6: 夫51〜54歳)
     if (y >= 3 && y <= 6) exp += v('sonEdu');
+
+    // 車購入（一括）
+    if (carBuyYears.has(y)) exp += v('carPrice') * carCount;
+
+    // 大規模修繕（一括）
+    if (renovAges.includes(husbAge)) exp += v('renovCost');
 
     expenseArr.push(Math.round(exp));
 
     // === UPDATE ===
-    trust *= (1 + trustRate); // grow trust
+    trust *= (1 + trustRate);
     cash += income - exp;
-
-    // Auto-replenish cash from trust if negative
     if (cash < 0 && trust > 0) {
-      const needed = -cash;
-      const fromTrust = Math.min(needed, trust);
+      const fromTrust = Math.min(-cash, trust);
       trust -= fromTrust;
       cash += fromTrust;
     }
@@ -401,8 +432,6 @@ function simulate() {
     const idx = age - START_AGE;
     if (idx < 0 || idx >= YEARS) return;
     const total = totalArr[idx];
-    const housing = Math.max(HOUSING_START - Math.min(idx, 10) * HOUSING_ANNUAL_DROP, HOUSING_MIN);
-    const networth = total + housing + PROPERTY;
     const d = document.createElement('div');
     d.className = 'acard';
     const tag = age === 80
@@ -410,14 +439,13 @@ function simulate() {
       : '';
     d.innerHTML = `<div class="acard-age">夫${age}歳</div>
       <div class="acard-val">${Math.max(0,total).toLocaleString()}<span>万円</span></div>
-      <div class="acard-sub">不動産含む ${networth.toLocaleString()}万</div>${tag}`;
+      <div class="acard-sub">金融資産合計</div>${tag}`;
     cardsEl.appendChild(d);
   });
 
   // === CHART 1: Assets ===
   if (chartAssets) chartAssets.destroy();
   const ctx1 = document.getElementById('chartAssets').getContext('2d');
-  // Show every 2 years for cleaner chart
   const step = 2;
   const filterIdx = ages.map((_,i) => i).filter(i => i % step === 0);
   chartAssets = new Chart(ctx1, {
