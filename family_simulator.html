@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>48歳家族 資産シミュレーター</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+  background: #f2f4f7; color: #1a1a2e;
+  padding: 16px; max-width: 680px; margin: 0 auto;
+}
+a.back { font-size: 13px; color: #1a6fb5; text-decoration: none; display: inline-block; margin-bottom: 12px; }
+h1 { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+.subtitle { font-size: 12px; color: #888; margin-bottom: 16px; }
+
+/* family info bar */
+.fam-bar {
+  background: #1a1a2e; color: #fff; border-radius: 12px;
+  padding: 10px 14px; margin-bottom: 14px;
+  display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px;
+}
+.fam-item { display: flex; flex-direction: column; gap: 2px; }
+.fam-name { font-weight: 700; font-size: 13px; }
+.fam-desc { color: #aaa; }
+
+.section {
+  background: #fff; border-radius: 14px; padding: 14px;
+  margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.section-title {
+  font-size: 12px; font-weight: 600; color: #888;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.sl-label { font-size: 12px; color: #444; margin-top: 8px; margin-bottom: 2px; }
+.sl-label:first-child { margin-top: 0; }
+.sl-row { display: flex; align-items: center; gap: 8px; }
+input[type=range] {
+  flex: 1; -webkit-appearance: none; height: 4px;
+  border-radius: 2px; background: #dde3ea; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px;
+  border-radius: 50%; background: #1a6fb5; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.sl-val { font-size: 12px; font-weight: 700; color: #1a6fb5; min-width: 60px; text-align: right; }
+
+/* btn group */
+.btn-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.btn {
+  padding: 7px 14px; border: 2px solid #1a6fb5; border-radius: 8px;
+  background: #fff; color: #1a6fb5; font-size: 13px; font-weight: 600;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.btn.active { background: #1a6fb5; color: #fff; }
+
+/* info chip */
+.chip {
+  display: inline-block; background: #f0f4ff; color: #1a6fb5;
+  border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600;
+  margin-top: 6px;
+}
+
+/* age cards */
+.age-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.acard {
+  background: #fff; border-radius: 12px; padding: 10px 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center;
+}
+.acard-age { font-size: 11px; color: #888; margin-bottom: 3px; }
+.acard-val { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+.acard-val span { font-size: 11px; font-weight: 400; }
+.acard-sub { font-size: 10px; color: #aaa; margin-top: 2px; }
+.tag-ok { background: #d4f4e2; color: #1a7a45; border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 700; margin-top: 3px; display: inline-block; }
+.tag-ng { background: #fde8e8; color: #c0392b; border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 700; margin-top: 3px; display: inline-block; }
+
+.chart-wrap { background: #fff; border-radius: 14px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 12px; }
+.chart-title { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 8px; }
+.note { font-size: 10px; color: #aaa; margin-top: 8px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back">← トップへ</a>
+<h1>48歳家族 資産シミュレーター</h1>
+<p class="subtitle">夫100歳までの資産推移を試算します</p>
+
+<!-- 家族情報 -->
+<div class="fam-bar">
+  <div class="fam-item"><span class="fam-name">夫 48歳</span><span class="fam-desc">現在〜100歳</span></div>
+  <div class="fam-item"><span class="fam-name">妻 45歳</span><span class="fam-desc">現在〜97歳</span></div>
+  <div class="fam-item"><span class="fam-name">長女 18歳</span><span class="fam-desc">大学2年（残2年）</span></div>
+  <div class="fam-item"><span class="fam-name">長男 15歳</span><span class="fam-desc">高校2年→大学4年</span></div>
+</div>
+
+<!-- 初期資産 -->
+<div class="section">
+  <div class="section-title">初期資産</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">現金</div>
+      <div class="sl-row">
+        <input type="range" id="cash0" min="0" max="3000" step="100" value="500" oninput="sl('cash0','cash0Val','万円')">
+        <div class="sl-val" id="cash0Val">500万円</div>
+      </div>
+      <div class="sl-label">投資信託</div>
+      <div class="sl-row">
+        <input type="range" id="trust0" min="0" max="8000" step="100" value="2700" oninput="sl('trust0','trust0Val','万円')">
+        <div class="sl-val" id="trust0Val">2,700万円</div>
+      </div>
+    </div>
+    <div>
+      <div class="sl-label">高配当株</div>
+      <div class="sl-row">
+        <input type="range" id="stock0" min="0" max="5000" step="100" value="1500" oninput="sl('stock0','stock0Val','万円')">
+        <div class="sl-val" id="stock0Val">1,500万円</div>
+      </div>
+      <div class="sl-label" style="margin-top:8px">配当利回り（固定）</div>
+      <div class="chip">3.5%</div>
+    </div>
+  </div>
+</div>
+
+<!-- 投資設定 -->
+<div class="section">
+  <div class="section-title">投資信託 年利</div>
+  <div class="btn-group" id="rateGroup">
+    <button class="btn" data-val="0" onclick="selBtn('rateGroup',this)">0%</button>
+    <button class="btn" data-val="3" onclick="selBtn('rateGroup',this)">3%</button>
+    <button class="btn active" data-val="5" onclick="selBtn('rateGroup',this)">5%</button>
+    <button class="btn" data-val="7" onclick="selBtn('rateGroup',this)">7%</button>
+    <button class="btn" data-val="10" onclick="selBtn('rateGroup',this)">10%</button>
+    <button class="btn" data-val="15" onclick="selBtn('rateGroup',this)">15%</button>
+  </div>
+</div>
+
+<!-- 収入設定 -->
+<div class="section">
+  <div class="section-title">収入設定</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">夫 月給</div>
+      <div class="sl-row">
+        <input type="range" id="husbSalary" min="20" max="150" step="5" value="60" oninput="sl('husbSalary','husbSalaryVal','万円/月')">
+        <div class="sl-val" id="husbSalaryVal">60万円/月</div>
+      </div>
+      <div class="sl-label">夫 退職年齢</div>
+      <div class="btn-group" id="husbRetire" style="margin-top:4px">
+        <button class="btn" data-val="55" onclick="selBtn('husbRetire',this)">55</button>
+        <button class="btn" data-val="60" onclick="selBtn('husbRetire',this)">60</button>
+        <button class="btn active" data-val="65" onclick="selBtn('husbRetire',this)">65</button>
+        <button class="btn" data-val="70" onclick="selBtn('husbRetire',this)">70</button>
+      </div>
+      <div class="sl-label">夫 年金（月・65歳〜）</div>
+      <div class="sl-row">
+        <input type="range" id="husbPension" min="5" max="30" step="1" value="18" oninput="sl('husbPension','husbPensionVal','万円/月')">
+        <div class="sl-val" id="husbPensionVal">18万円/月</div>
+      </div>
+    </div>
+    <div>
+      <div class="sl-label">妻 月給</div>
+      <div class="sl-row">
+        <input type="range" id="wifeSalary" min="0" max="80" step="5" value="25" oninput="sl('wifeSalary','wifeSalaryVal','万円/月')">
+        <div class="sl-val" id="wifeSalaryVal">25万円/月</div>
+      </div>
+      <div class="sl-label">妻 退職年齢</div>
+      <div class="btn-group" id="wifeRetire" style="margin-top:4px">
+        <button class="btn" data-val="55" onclick="selBtn('wifeRetire',this)">55</button>
+        <button class="btn active" data-val="60" onclick="selBtn('wifeRetire',this)">60</button>
+        <button class="btn" data-val="65" onclick="selBtn('wifeRetire',this)">65</button>
+        <button class="btn" data-val="70" onclick="selBtn('wifeRetire',this)">70</button>
+      </div>
+      <div class="sl-label">妻 年金（月・65歳〜）</div>
+      <div class="sl-row">
+        <input type="range" id="wifePension" min="0" max="20" step="1" value="10" oninput="sl('wifePension','wifePensionVal','万円/月')">
+        <div class="sl-val" id="wifePensionVal">10万円/月</div>
+      </div>
+    </div>
+  </div>
+  <div class="sl-label" style="margin-top:10px">家賃収入（月・最初の5年間）</div>
+  <div class="sl-row">
+    <input type="range" id="rental" min="0" max="30" step="1" value="10" oninput="sl('rental','rentalVal','万円/月')">
+    <div class="sl-val" id="rentalVal">10万円/月</div>
+  </div>
+</div>
+
+<!-- 支出設定 -->
+<div class="section">
+  <div class="section-title">支出設定</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">月 固定費</div>
+      <div class="sl-row">
+        <input type="range" id="fixedM" min="5" max="50" step="1" value="20" oninput="sl('fixedM','fixedMVal','万円/月')">
+        <div class="sl-val" id="fixedMVal">20万円/月</div>
+      </div>
+      <div class="sl-label">月 変動費</div>
+      <div class="sl-row">
+        <input type="range" id="varM" min="5" max="40" step="1" value="15" oninput="sl('varM','varMVal','万円/月')">
+        <div class="sl-val" id="varMVal">15万円/月</div>
+      </div>
+    </div>
+    <div>
+      <div class="sl-label">年 特別費</div>
+      <div class="sl-row">
+        <input type="range" id="specialY" min="0" max="300" step="10" value="50" oninput="sl('specialY','specialYVal','万円/年')">
+        <div class="sl-val" id="specialYVal">50万円/年</div>
+      </div>
+      <div class="sl-label">車 維持費（年）</div>
+      <div class="sl-row">
+        <input type="range" id="carY" min="0" max="150" step="5" value="35" oninput="sl('carY','carYVal','万円/年')">
+        <div class="sl-val" id="carYVal">35万円/年</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:10px">
+    <div class="chip">🏠 住宅ローン 月6万 × 残15年（〜夫63歳）固定</div>
+  </div>
+</div>
+
+<!-- 教育費 -->
+<div class="section">
+  <div class="section-title">教育費</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">長女 大学費（年）</div>
+      <div class="sl-row">
+        <input type="range" id="dauEdu" min="50" max="300" step="10" value="150" oninput="sl('dauEdu','dauEduVal','万円/年')">
+        <div class="sl-val" id="dauEduVal">150万円/年</div>
+      </div>
+      <div style="font-size:10px;color:#aaa;margin-top:2px">夫48〜49歳（残2年）</div>
+    </div>
+    <div>
+      <div class="sl-label">長男 大学費（年）</div>
+      <div class="sl-row">
+        <input type="range" id="sonEdu" min="50" max="300" step="10" value="150" oninput="sl('sonEdu','sonEduVal','万円/年')">
+        <div class="sl-val" id="sonEduVal">150万円/年</div>
+      </div>
+      <div style="font-size:10px;color:#aaa;margin-top:2px">夫51〜54歳（大学4年間）</div>
+    </div>
+  </div>
+</div>
+
+<!-- 不動産 -->
+<div class="section">
+  <div class="section-title">不動産（参考・非売却前提）</div>
+  <div class="grid2">
+    <div>
+      <div class="sl-label">自宅価値（現在）</div>
+      <div class="chip">1,500万円 → 毎年100万↓ → 下限500万</div>
+    </div>
+    <div>
+      <div class="sl-label">不動産物件</div>
+      <div class="chip">1,000万円（価値固定）</div>
+    </div>
+  </div>
+</div>
+
+<!-- 年齢別カード -->
+<div class="age-cards" id="ageCards"></div>
+
+<!-- 金融資産グラフ -->
+<div class="chart-wrap">
+  <div class="chart-title">金融資産推移（現金・投資信託・高配当株）</div>
+  <canvas id="chartAssets" height="280"></canvas>
+  <p class="note">※ 現金が枯渇した場合は投資信託を自動取り崩し。高配当株は売却せず配当のみ取得。</p>
+</div>
+
+<!-- 収支グラフ -->
+<div class="chart-wrap">
+  <div class="chart-title">年間収支（収入 vs 支出）</div>
+  <canvas id="chartCashflow" height="220"></canvas>
+</div>
+
+<script>
+const START_AGE = 48;
+const END_AGE = 100;
+const YEARS = END_AGE - START_AGE + 1;
+const MORTGAGE_ANNUAL = 72; // 6万×12
+const MORTGAGE_REMAINING = 15; // 残15年
+const DIVIDEND_RATE = 0.035;
+const HOUSING_START = 1500;
+const HOUSING_MIN = 500;
+const HOUSING_ANNUAL_DROP = 100;
+const PROPERTY = 1000;
+
+let chartAssets = null;
+let chartCF = null;
+
+function v(id) { return parseFloat(document.getElementById(id).value); }
+function getBtn(groupId) { return parseFloat(document.querySelector(`#${groupId} .btn.active`).dataset.val); }
+
+function sl(id, valId, unit) {
+  const val = parseFloat(document.getElementById(id).value);
+  document.getElementById(valId).textContent = val.toLocaleString() + unit;
+  simulate();
+}
+function selBtn(groupId, el) {
+  document.querySelectorAll(`#${groupId} .btn`).forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  simulate();
+}
+
+function simulate() {
+  const trustRate = getBtn('rateGroup') / 100;
+  const husbRetireAge = getBtn('husbRetire');
+  const wifeRetireAge = getBtn('wifeRetire');
+
+  let cash = v('cash0');
+  let trust = v('trust0');
+  let stock = v('stock0');
+
+  const ages = [], trustArr = [], stockArr = [], cashArr = [], totalArr = [];
+  const incomeArr = [], expenseArr = [];
+
+  for (let y = 0; y < YEARS; y++) {
+    const husbAge = START_AGE + y;
+    const wifeAge = 45 + y;
+
+    // Record start of year
+    ages.push(husbAge);
+    trustArr.push(Math.round(trust));
+    stockArr.push(Math.round(stock));
+    cashArr.push(Math.round(cash));
+    totalArr.push(Math.round(trust + stock + cash));
+
+    // === INCOME ===
+    let income = 0;
+
+    // Salary (husband)
+    if (husbAge < husbRetireAge) income += v('husbSalary') * 12;
+    // Salary (wife) - wife is 3 years younger
+    if (wifeAge < wifeRetireAge) income += v('wifeSalary') * 12;
+    // Rental (first 5 years only)
+    if (y < 5) income += v('rental') * 12;
+    // Pension (husband from 65)
+    if (husbAge >= 65) income += v('husbPension') * 12;
+    // Pension (wife from 65 = husband age 68)
+    if (wifeAge >= 65) income += v('wifePension') * 12;
+    // Dividends
+    const div = stock * DIVIDEND_RATE;
+    income += div;
+
+    incomeArr.push(Math.round(income));
+
+    // === EXPENSES ===
+    let exp = 0;
+    exp += (v('fixedM') + v('varM')) * 12;
+    exp += v('specialY');
+    exp += v('carY');
+    // Mortgage (残15年: y=0〜14)
+    if (y < MORTGAGE_REMAINING) exp += MORTGAGE_ANNUAL;
+    // Education: 長女大学 (y=0,1)
+    if (y === 0 || y === 1) exp += v('dauEdu');
+    // Education: 長男大学 (y=3〜6: 夫51〜54歳)
+    if (y >= 3 && y <= 6) exp += v('sonEdu');
+
+    expenseArr.push(Math.round(exp));
+
+    // === UPDATE ===
+    trust *= (1 + trustRate); // grow trust
+    cash += income - exp;
+
+    // Auto-replenish cash from trust if negative
+    if (cash < 0 && trust > 0) {
+      const needed = -cash;
+      const fromTrust = Math.min(needed, trust);
+      trust -= fromTrust;
+      cash += fromTrust;
+    }
+    if (cash < 0) cash = 0;
+  }
+
+  // === AGE CARDS ===
+  const cardAges = [55, 60, 65, 70, 80, 100];
+  const cardsEl = document.getElementById('ageCards');
+  cardsEl.innerHTML = '';
+  cardAges.forEach(age => {
+    const idx = age - START_AGE;
+    if (idx < 0 || idx >= YEARS) return;
+    const total = totalArr[idx];
+    const housing = Math.max(HOUSING_START - Math.min(idx, 10) * HOUSING_ANNUAL_DROP, HOUSING_MIN);
+    const networth = total + housing + PROPERTY;
+    const d = document.createElement('div');
+    d.className = 'acard';
+    const tag = age === 100
+      ? (total >= 0 ? '<div class="tag-ok">資産あり</div>' : '<div class="tag-ng">資産枯渇</div>')
+      : '';
+    d.innerHTML = `<div class="acard-age">夫${age}歳</div>
+      <div class="acard-val">${Math.max(0,total).toLocaleString()}<span>万円</span></div>
+      <div class="acard-sub">不動産含む ${networth.toLocaleString()}万</div>${tag}`;
+    cardsEl.appendChild(d);
+  });
+
+  // === CHART 1: Assets ===
+  if (chartAssets) chartAssets.destroy();
+  const ctx1 = document.getElementById('chartAssets').getContext('2d');
+  // Show every 2 years for cleaner chart
+  const step = 2;
+  const filterIdx = ages.map((_,i) => i).filter(i => i % step === 0);
+  chartAssets = new Chart(ctx1, {
+    data: {
+      labels: filterIdx.map(i => ages[i] + '歳'),
+      datasets: [
+        { type:'bar', label:'現金', data: filterIdx.map(i=>Math.max(0,cashArr[i])), backgroundColor:'#6dca8a', stack:'a', borderRadius:2 },
+        { type:'bar', label:'投資信託', data: filterIdx.map(i=>Math.max(0,trustArr[i])), backgroundColor:'#4a9ede', stack:'a', borderRadius:2 },
+        { type:'bar', label:'高配当株', data: filterIdx.map(i=>stockArr[i]), backgroundColor:'#f0a04b', stack:'a', borderRadius:2 },
+        { type:'line', label:'総資産', data: filterIdx.map(i=>totalArr[i]), borderColor:'#1a1a2e', borderWidth:2, pointRadius:0, tension:0.3 },
+      ]
+    },
+    options: {
+      responsive: true, animation: {duration:300},
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {labels:{font:{size:11},boxWidth:12,padding:8}},
+        tooltip: {callbacks:{label: c=>` ${c.dataset.label}: ${c.parsed.y?.toLocaleString()}万円`}}
+      },
+      scales: {
+        x: {stacked:true, ticks:{font:{size:10},maxTicksLimit:14}, grid:{display:false}},
+        y: {stacked:false, ticks:{font:{size:10}, callback:v=>v>=10000?(v/10000).toFixed(1)+'億':v.toLocaleString()+'万'}, grid:{color:'#eee'}}
+      }
+    }
+  });
+
+  // === CHART 2: Cashflow ===
+  if (chartCF) chartCF.destroy();
+  const ctx2 = document.getElementById('chartCashflow').getContext('2d');
+  chartCF = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: filterIdx.map(i => ages[i] + '歳'),
+      datasets: [
+        { label:'収入', data: filterIdx.map(i=>incomeArr[i]), backgroundColor:'#4a9ede88', borderRadius:3 },
+        { label:'支出', data: filterIdx.map(i=>-expenseArr[i]), backgroundColor:'#e7535388', borderRadius:3 },
+      ]
+    },
+    options: {
+      responsive: true, animation:{duration:300},
+      plugins: {
+        legend:{labels:{font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${Math.abs(c.parsed.y).toLocaleString()}万円`}}
+      },
+      scales: {
+        x: {ticks:{font:{size:10},maxTicksLimit:14},grid:{display:false}},
+        y: {ticks:{font:{size:10},callback:v=>Math.abs(v).toLocaleString()+'万'},grid:{color:'#eee'}}
+      }
+    }
+  });
+}
+
+simulate();
+</script>
+</body>
+</html>
